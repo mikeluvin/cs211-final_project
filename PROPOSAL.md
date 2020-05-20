@@ -97,4 +97,4 @@ the mouse is currently being used for?\
 In normal backgammon, the dice double on a double roll. Would this be too much
 functionality to add?\
 How do we show timed (~2 seconds) error messages on the screen (i.e. "Player 1
-has no move", "Game over: Player 2 wins", "You cannot move there - try again")?\
+has no move", "Game over: Player 2 wins", "You cannot move there - try again")?
