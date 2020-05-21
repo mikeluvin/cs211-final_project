@@ -47,7 +47,10 @@ roll again.
 Players alternate turns. At each turn, the player must move their pieces a total
 of the number they roll, where each move is a number shown by a die. For
 example, if a player rolls three and four, they must move either one piece three
-positions and another piece four positions, or one piece seven positions. All
+positions and another piece four positions, or one piece seven positions. It is
+important to not that, for the example described, the player must be able to 
+occupy a space at three and/or four positions away in order to be able to move
+the seven spaces. In other words, each die's move is considered separately. All
 moves are in the same direction (clockwise for player 1, counterclockwise for
 player 2). A player's piece can land on a position occupied by their pieces, no
 pieces, or only one of the other player's pieces, in which case that player's
@@ -65,8 +68,12 @@ Once a player has all pieces in the final section of their path, they can start
 to move pieces into their endzone, with some restrictions. For example, if
 player 1 has a piece in position 18 and a piece in position 20, and they must
 move a piece five positions, they must move the piece from position 18 to
-position 23. Also, if a player's piece is put in jail, they must get that piece
-back to the final section before continuing to move pieces to the endzone.
+position 23. Another case is when a player rolls a number that is greater than
+their position away from the endzone. For example, if you have pieces in 
+positions 20 and 22, and you roll a 5 and 6, then you must move all pieces from
+position 22 before moving any from 20. Also, if a player's piece is put in jail,
+they must get that piece back to the final section before continuing to move 
+pieces to the endzone.
 
 ## Functional requirements
 
@@ -77,14 +84,15 @@ their positions (on board, in jail, or in endzone).
 4. The players cannot place their pieces where the other player already has more
 than one piece.
 5. The pieces are appropriately removed from the board and put in jail.
-6. The players select both the piece to move and the position to move it to using
-mouse clicks.
+6. The players select both the piece to move and the position to move it to 
+using mouse clicks.
 7. The game tracks when all of each player's pieces are in their final section.
 8. The pieces are appropriately moved from the board into the correct endzone.
 9. The game recognizes when no move can be made.
 10. The game alternates turns between players.
 11. The dice randomly select two numbers from 1 to 6.
-12. The game recognizes when a player has won.
+12. The game recognizes when a player has won, and will indicate the winner on 
+the screen.
 
 ## Open questions
 
