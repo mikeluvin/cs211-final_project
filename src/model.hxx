@@ -17,9 +17,7 @@ enum class Player
 //function that will go in player.hxx
 Player other_player(Player);
 
-//***I actually don't think we even need a piece class based on how i
-// constructed Board***
-/*
+//a class to store information about a single piece on the board
 class Piece
 {
 public:
@@ -27,24 +25,26 @@ public:
     explicit Piece(int pos, Player player);
 
 private:
-    //position from 0-23(?), (what to make jail/endzone? maybe jail = 25,
-    // endzone = 24?)
+    //position from 0-23
     int pos_;
 
     //the player this piece belongs to
     Player player_;
 
+    //whether this piece is in jail
+    bool jailed?_;
+
+    //whether this piece is in its endzone
+    bool endzoned?_;
 };
-*/
 
 class Board
 {
 public:
-    //Constructs the default board, with all positions having 0 pieces and
-    // with Player::neither
-    // we should also make a constructor that makes the initial state of the
-    // board
-    Board();
+    //Constructs the default board, with all positions having 0 pieces
+    // if init is false, and with the proper initial setup if init is
+    // true
+    Board(bool init);
 
     //returns the number of pieces at the given position on the board.
     int num_pieces(int pos);
@@ -62,7 +62,32 @@ public:
     //adds a piece to the given position for the given player.
     void add_piece(int pos, Player);
 
+    //sends a single piece at the given position to jail
+    void send_to_jail(int pos);
+
+    //sends a single piece at the given position to its endzone
+    void send_to_endzone(int pos);
+
+    //returns number of jailed pieces for given player
+    int num_jailed(Player player);
+
+    //returns number of endzoned pieces for given player
+    int num_endzoned(Player player);
+
+    //removes piece of player from jail to position pos
+    void remove_from_jail(int pos, Player player);
+
 private:
+
+    //stores the number of each type of piece in jail
+    struct jail
+    {
+        int num_dark;
+        int num_light;
+    };
+
+    //the jail for the game
+    static jail board_jail;
 
     //stores the number of pieces and player
     struct pos_info
@@ -72,35 +97,46 @@ private:
         //initialized to {0, Player::neither}
     };
 
-    //a vector which stores a pos_info struct in each position. The array
-    // index corresponds to the position on the board, 0-25
-    //**this is open to change, just how i thought to go about it
-    std::vector<pos_info> positions_{26, {0, Player::neither}};
+    //endzones
+    pos_info dark_endzone_;
+    pos_info light_endzone_;
 
+    //a vector which stores a pos_info struct in each position. The array
+    // index corresponds to the position on the board, 0-23
+    std::vector<pos_info> positions_{24, {0, Player::neither}};
+
+    //vector of all 15 dark pieces
+    std::vector<Piece> dark_pieces_;
+
+    //vector of all 15 light pieces
+    std::vector<Piece> light_pieces_;
 };
 
-
-//idk if this is how you were thinking of doing this
+//dice for dice rolls
 class Dice
 {
 public:
     //constructs a dice class by randomly generating two ints between 1 and 6
     Dice();
+
+    //produces new random ints between 1 and 6
+    void roll();
+
     //returns the 1st die number
     int num_1();
+
     //returns the 2nd die number
     int num_2();
+
 private:
     //randomly generated ints from 1-6
     int num_1_;
     int num_2_;
-
 };
 
 
 class Model
 {
-
 public:
     //returns whether the game is finished. This is true when one player has all
     //their pieces in their endzone (and turn_ == Player::neither).
@@ -116,13 +152,11 @@ private:
     Player turn_;
     Player winner_;
     Board board_;
+    Dice dice_;
 
     //
     ///HELPER FUNCTIONS
     //
-
-    //sends the piece at the given position to jail
-    void go_to_jail_(int pos);
 
     //determines whether the given Player can move their piece to the given
     // position. Returns true if they can, false otherwise
@@ -135,5 +169,4 @@ private:
 
     //Test access
     friend struct Test_access;
-
 };
