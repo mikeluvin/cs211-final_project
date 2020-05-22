@@ -1,0 +1,18 @@
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" "/Users/agdelesseps/Google Drive/YEAR2 Q3/COMP_SCI 211/fp"
+-- The CXX compiler identification is AppleClang 10.0.1.10010046
+-- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/c++
+-- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Using vendored Catch2 library (.cs211/lib/catch)
+-- Using vendored Ge211 library (.cs211/lib/ge211)
+-- Found SDL2: /usr/local/lib/libSDL2.dylib;-framework Cocoa  
+-- Found SDL2_image: /usr/local/lib/libSDL2_image.dylib (found version "..") 
+-- Found SDL2_mixer: /usr/local/lib/libSDL2_mixer.dylib (found version "..") 
+-- Found SDL2_ttf: /usr/local/lib/libSDL2_ttf.dylib (found version "..") 
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/agdelesseps/Google Drive/YEAR2 Q3/COMP_SCI 211/fp/cmake-build-debug
