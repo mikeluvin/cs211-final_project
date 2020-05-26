@@ -120,3 +120,8 @@ TEST_CASE("advance a turn")
     t.play_move(13);
     CHECK( t.turn() == Player::light);
 }
+
+TEST_CASE("hopefully github works now")
+{
+    CHECK(true);
+}
