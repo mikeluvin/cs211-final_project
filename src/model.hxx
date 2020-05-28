@@ -6,6 +6,8 @@
 // TODO: Sketch the structure of your model and declare its operations.
 //
 
+//added to own file
+/*
 //even though there's no ties in Backgammon, we'll assign Player::neither when
 // the game starts (maybe?) and when the game is over
 enum class Player
@@ -16,7 +18,10 @@ enum class Player
 };
 //function that will go in player.hxx
 Player other_player(Player);
+ */
 
+//removed from project
+/*
 //a class to store information about a single piece on the board
 class Piece
 {
@@ -37,7 +42,10 @@ private:
 //whether this piece is in its endzone
     bool endzoned?_;
 };
+ */
 
+//added to own file
+/*
 class Board
 {
 public:
@@ -113,7 +121,10 @@ private:
 //vector of all 15 light pieces
     std::vector<Piece> light_pieces_;
 };
+ */
 
+//added to own class
+/*
 //dice for dice rolls
 class Dice
 {
@@ -135,6 +146,7 @@ private:
     int num_1_;
     int num_2_;
 };
+ */
 
 
 class Model
