@@ -5,6 +5,7 @@
 
 #include "player.hxx"
 #include <ge211.hxx>
+#include <vector>
 
 /*
 #ifndef FINAL_PROJECT_BOARD_HXX

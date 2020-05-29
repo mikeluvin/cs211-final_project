@@ -4,6 +4,7 @@
 #include "board.hxx"
 #include "player.hxx"
 #include <ge211.hxx>
+#include <vector>
 
 //
 // TODO: Sketch the structure of your model and declare its operations.
@@ -177,7 +178,8 @@ public:
     { return winner_; }
 
 //attempts to play the move at the given position. If successful, advances
-// the state of the game to the correct player or game over
+// the state of the game to the correct player or game over.
+// i think we also want to check here if there's no possible moves
     void play_move(int pos);
 
 private:
@@ -185,6 +187,9 @@ private:
     Player winner_ = Player::neither;
     Board board_ = Board(true);
     Dice dice_;
+
+    //we may want to make a class that contains the positions that have moves
+    // after the dice are rolled?
 
 //
 ///HELPER FUNCTIONS
@@ -204,6 +209,12 @@ private:
 //(helper for find_moves_)
     bool evaluate_position_(int pos_from, int pos_to);
 
+    //we need a function that checks if the current player has a piece in
+    // jail, then does all the necessary moves to get all the pieces out of
+    // jail. this is going to have to be a helper for play_move, as the jail
+    // does not have an int position
+
+
 //finds the possible moves for a piece at the given position for the
 // current player. Returns a vector of the possible positions, or empty
 // if there's no moves
@@ -211,14 +222,18 @@ private:
     std::vector<int> const find_moves_(int pos);
 
 
+    //advances the turn by setting the turn_ to other_player(turn_),
+    // checking for game over, rolling the dice
+    bool advance_turn_();
+
 //checks to see if a player has all 15 pieces in their endzone, and if
 // true, sets that player to the winner and turn_ to Player::neither
 //(helper for really_play_move)
     void set_game_over_();
 
 //actually executes the move by setting the relevant board positions
-// (including moving a player to jail) and then advancing the turn and
-// checking for the game to be over
+// (including moving a player to jail), setting the used die to inactive, and
+// then advancing the turn and checking for the game to be over
 //(helper for play_move)
     void really_play_move_(int pos);
 

@@ -11,6 +11,9 @@ bool Model::is_game_over() const
     return board().num_pieces(0) == 15 || board().num_pieces(25) == 15;
 }
 
+//
+// HELPER FUNCTIONS
+//
 
 //we need to implement a function to determine who goes first. Simple to
 // write, but idk where exactly it belongs, cause it's a special scenario at
@@ -48,6 +51,58 @@ bool Model::lower_than_dice_()
         // positions
         return dice_.num_1() > std::abs(pos_vec.back() - 25) && dice_.num_1() >
         std::abs(pos_vec.back() - 25);
+    }
+    return false;
+}
+
+//determines whether the current Player can move their piece from pos_from
+// to the given position pos_to. Returns true if they can, false otherwise
+//(helper for find_moves_)
+//
+//we're going to need some variable in the controller to store the position
+// of the first click (the selected piece) and the position of the second
+// click (where the selected piece is being moved to)
+bool Model::evaluate_position_(int pos_from, int pos_to)
+{
+    //check if we're even clicking on a valid piece for the given player
+    if (board().player(pos_from) == turn()) {
+        //honestly have no clue how we're going to deal with the jail...this
+        // needs to be checked first, but the jail is not a int position...i
+        // think we want to create a separate function that deals with moving
+        // pieces from jail, a helper for find_moves
+
+        //negate dice since dark goes from 24 -> 0
+        if (turn() == Player::dark)
+            dice_.invert();
+
+        //if the other player has more than once piece in pos_to, return false
+        if (board_.player(pos_to) == other_player(turn()) && board_
+        .num_pieces(pos_to) > 1) {
+            return false;
+        }
+
+        //check if all are in final first, otherwise it's normal gameplay
+        if (all_in_final_()) {
+            //yeah we may have to change the lower_than_dice function so it
+            // checks each die?
+            if (lower_than_dice_()) {
+                //case when
+            } else {
+
+            }
+        } else {
+            //normal gameplay when not all are in final, no one in jail, and
+            // the spot has 1 or less of the other player's pieces
+            //return true if either of the dice result in a valid move
+            if (dice_.num_1_active() && dice_.num_2_active())
+                return pos_from + dice_.num_1() == pos_to || pos_from + dice_
+                .num_2() == pos_to;
+            else if (dice_.num_1_active())
+                return pos_from + dice_.num_1() == pos_to;
+            else if (dice_.num_1_active())
+                return pos_from + dice_.num_2() == pos_to;
+
+        }
     }
     return false;
 }
