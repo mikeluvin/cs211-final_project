@@ -4,24 +4,26 @@
 
 #include "dice.hxx"
 
+
 Dice::Dice()
-        : random_ (ge211::Abstract_game::get_random())
-        , num_1_ (random.between(1, 6))
-        , num_2_ (random.between(1, 6))
+        : generator_ ()
+        , num_1_ (random_(generator_))
+        , num_2_ (random_(generator_))
 {}
 
-void roll()
+void Dice::roll()
 {
-    num_1_ = random.between(1, 6);
-    num_2_ = random.between(1, 6);
+    num_1_ = random_(generator_);
+    num_2_ = random_(generator_);
+
 }
 
-int num_1()
+int Dice::num_1()
 {
     return num_1_;
 }
 
-int num_2()
+int Dice::num_2()
 {
-    return num_2;
+    return num_2_;
 }

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "dice.hxx"
+#include "board.hxx"
+#include "player.hxx"
 #include <ge211.hxx>
 
 //
@@ -162,13 +165,16 @@ public:
     bool is_game_over() const;
 
 //returns the current board, which we can use board's public functions on
-    Board board();
+    Board board() const
+    { return board_; }
 
 //returns the current turn
-    Player turn() const;
+    Player turn() const
+    { return turn_ ; }
 
 //returns the winner
-    Player winner() const;
+    Player winner() const
+    { return winner_; }
 
 //attempts to play the move at the given position. If successful, advances
 // the state of the game to the correct player or game over
@@ -176,8 +182,8 @@ public:
 
 private:
     Player turn_;
-    Player winner_;
-    Board board_;
+    Player winner_ = Player::neither;
+    Board board_ = Board(true);
     Dice dice_;
 
 //

@@ -2,12 +2,16 @@
 // Created by Anton de Lesseps on 5/27/20.
 //
 #pragma once
+
+#include "player.hxx"
 #include <ge211.hxx>
 
+/*
 #ifndef FINAL_PROJECT_BOARD_HXX
 #define FINAL_PROJECT_BOARD_HXX
 
 #endif //FINAL_PROJECT_BOARD_HXX
+*/
 
 class Board
 {
@@ -48,6 +52,9 @@ public:
 //returns number of endzoned pieces for given player
     int num_endzoned(Player player);
 
+//returns a vector of the positions of the pieces in the player's final stretch
+// for the given player
+    std::vector<int> pos_final(Player);
 
 private:
 
@@ -59,7 +66,7 @@ private:
     };
 
 //the jail for the game
-    static jail jail_;
+    jail jail_;
 
 //stores the number of pieces and player
     struct pos_info
@@ -75,5 +82,6 @@ private:
 
 //a vector which stores a pos_info struct in each position. The array
 // index corresponds to the position on the board, 0-23
+// dark's endzone is position 0, light's is 25
     std::vector<pos_info> positions_{26, {0, Player::neither}};
 };
