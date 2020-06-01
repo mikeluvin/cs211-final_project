@@ -54,6 +54,3 @@ void Dice::set_inactive(int dice_num)
         num_1_.active = false;
         num_2_.active = false;
 }
-
-
-

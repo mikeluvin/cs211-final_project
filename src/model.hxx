@@ -199,10 +199,10 @@ private:
 //(helper for evaluate_position_)
     bool all_in_final_();
 
-//checks if the dice are greater than the Player's pieces are away from
-// the endzone
+//checks if the dice are greater than or equal to the Player's pieces are
+// away from the endzone
 //(helper for evaluate_position, to be used after all_in_final_ is checked)
-    bool lower_than_dice_();
+    bool leq_dice_();
 
 //determines whether the current Player can move their piece from pos_from
 // to the given position pos_to. Returns true if they can, false otherwise

@@ -37,7 +37,7 @@ bool Model::all_in_final_()
 //checks if the dice are greater than the Player's pieces are away from
 // the endzone
 //(helper for evaluate_position, to be used after all_in_final_ is checked)
-bool Model::lower_than_dice_()
+bool Model::leq_dice_()
 {
     std::vector<int> pos_vec = board().pos_final(turn());
 
@@ -45,12 +45,14 @@ bool Model::lower_than_dice_()
     // endzone is the last element in the vector
     // if both dice are greater than the last space, then there's no move
     if (turn() == Player::dark) {
-        return dice_.num_1() > pos_vec.back() && dice_.num_1() > pos_vec.back();
+        return (dice_.num_1_active() && dice_.num_1() >= pos_vec.back()) ||
+        (dice_.num_2_active() && dice_.num_2() >= pos_vec.back());
     } else if (turn() == Player::light) {
         // map 19 to 6, 24 to 1 so we can correctly compare the dice to the
         // positions
-        return dice_.num_1() > std::abs(pos_vec.back() - 25) && dice_.num_1() >
-        std::abs(pos_vec.back() - 25);
+        return (dice_.num_1_active() && dice_.num_1() >=
+        std::abs(pos_vec.back() - 25)) || (dice_.num_2_active() &&
+        dice_.num_2() >= std::abs(pos_vec.back() - 25));
     }
     return false;
 }
@@ -64,12 +66,29 @@ bool Model::lower_than_dice_()
 // click (where the selected piece is being moved to)
 bool Model::evaluate_position_(int pos_from, int pos_to)
 {
+    // -1 represents the position of the jail (but isn't actually the position
+    // of the jail)
+    if (pos_from == -1 && board().num_jailed(turn()) > 0) {
+        if (turn() == Player::dark && !(pos_to >= 19 && pos_to <= 24)) {
+            return false;
+        } else if (turn() == Player::light && !(pos_to >= 1 && pos_to <= 6)) {
+            return false;
+        } else if (board_.player(pos_to) == other_player(turn()) &&
+        board_.num_pieces(pos_to) > 1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    //check that move is in correct direction
+    else if (turn() == Player::dark && pos_to >= pos_from) {
+        return false;
+    } else if (turn() == Player::light && pos_to <= pos_from) {
+        return false;
+    }
     //check if we're even clicking on a valid piece for the given player
-    if (board().player(pos_from) == turn()) {
-        //honestly have no clue how we're going to deal with the jail...this
-        // needs to be checked first, but the jail is not a int position...i
-        // think we want to create a separate function that deals with moving
-        // pieces from jail, a helper for find_moves
+    else if (board().player(pos_from) == turn() && board().num_jailed(turn())
+    == 0) {
 
         //negate dice since dark goes from 24 -> 0
         if (turn() == Player::dark)
@@ -83,12 +102,42 @@ bool Model::evaluate_position_(int pos_from, int pos_to)
 
         //check if all are in final first, otherwise it's normal gameplay
         if (all_in_final_()) {
-            //yeah we may have to change the lower_than_dice function so it
-            // checks each die?
-            if (lower_than_dice_()) {
-                //case when
+            if (leq_dice_()) {
+                // can only play piece farthest from endzone
+                // not necessary to match die value
+                if (turn() == Player::dark && pos_to == 0 && pos_from ==
+                board_.pos_final(turn()).back()) {
+                    return true;
+                } else if (turn() == Player::light && pos_to == 25 && pos_from
+                == board_.pos_final(turn()).back()) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
-
+                // can only play pieces equal to or higher than dice
+                // difference between positions must be die value
+                if (turn() == Player::dark) {
+                    if (dice_.num_1_active() && pos_from >= dice_.num_1() &&
+                    pos_to - pos_from == -dice_.num_1) {
+                        return true;
+                    } else if (dice_.num_2_active() && pos_from >= dice_.num_2()
+                    && pos_to - pos_from == -dice_.num_2) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else if (turn() == Player::light) {
+                    if (dice_.num_1_active() && pos_from <= dice_.num_1() &&
+                    pos_to - pos_from == dice_.num_1) {
+                        return true;
+                    } else if (dice_.num_2_active() && pos_from <= dice_.num_2()
+                    && pos_to - pos_from == dice_.num_2) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
             }
         } else {
             //normal gameplay when not all are in final, no one in jail, and
@@ -99,9 +148,8 @@ bool Model::evaluate_position_(int pos_from, int pos_to)
                 .num_2() == pos_to;
             else if (dice_.num_1_active())
                 return pos_from + dice_.num_1() == pos_to;
-            else if (dice_.num_1_active())
+            else if (dice_.num_2_active())
                 return pos_from + dice_.num_2() == pos_to;
-
         }
     }
     return false;
