@@ -179,8 +179,8 @@ public:
 
 //attempts to play the move at the given position. If successful, advances
 // the state of the game to the correct player or game over.
-// i think we also want to check here if there's no possible moves
-    void play_move(int pos);
+// I think we also want to check here if there's no possible moves
+    void play_move(int pos_from, int pos_to);
 
 private:
     Player turn_;
@@ -214,6 +214,8 @@ private:
     // jail. this is going to have to be a helper for play_move, as the jail
     // does not have an int position
 
+    // helper for find_moves_
+    std::vector<int> find_moves_helper_(int pos_start, int dir)
 
 //finds the possible moves for a piece at the given position for the
 // current player. Returns a vector of the possible positions, or empty
@@ -221,10 +223,12 @@ private:
 //(helper for play_move)
     std::vector<int> const find_moves_(int pos);
 
+    // helper for advance_turn_
+    bool no_next_moves?_();
 
     //advances the turn by setting the turn_ to other_player(turn_),
     // checking for game over, rolling the dice
-    bool advance_turn_();
+    void advance_turn_();
 
 //checks to see if a player has all 15 pieces in their endzone, and if
 // true, sets that player to the winner and turn_ to Player::neither
@@ -235,7 +239,7 @@ private:
 // (including moving a player to jail), setting the used die to inactive, and
 // then advancing the turn and checking for the game to be over
 //(helper for play_move)
-    void really_play_move_(int pos);
+    void really_play_move_(int pos_from, int pos_to);
 
 //Test access
     friend struct Test_access;

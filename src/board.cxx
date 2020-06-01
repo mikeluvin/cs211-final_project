@@ -50,7 +50,8 @@ void Board::remove_piece(int pos)
 }
 
 //adds a piece to the given position for the given player.
-void Board::add_piece(int pos, Player thisplayer) {
+void Board::add_piece(int pos, Player thisplayer)
+{
     if (player(pos) == thisplayer) {
         positions_[pos].num_pieces += 1;
     } else if (player(pos) == Player::neither) {
