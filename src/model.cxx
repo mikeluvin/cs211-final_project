@@ -1,8 +1,13 @@
 #include "model.hxx"
 
 Model::Model()
+        : dice_ (Dice())
 {
-
+    if (dice_.num_1() >= dice_.num_2()) {
+        turn_ = Player::dark;
+    } else if (dice_.num_1() < dice_.num_2) {
+        turn_ = Player::light;
+    }
 }
 
 bool Model::is_game_over() const
@@ -215,6 +220,16 @@ std::vector<int> Model::find_moves_(int pos) const
     }
 }
 
+void set_game_over_()
+{
+    turn_ = Player::neither;
+    if (board_.num_pieces(0) == 15) {
+        winner_ = Player::dark;
+    } else if (board_.num_pieces(25) == 15) {
+        winner_ = Player::light;
+    }
+}
+
 bool Model::no_next_moves?_()
 {
     std::vector<int> temp_moves;
@@ -226,16 +241,6 @@ bool Model::no_next_moves?_()
     return true;
 }
 
-void set_game_over_()
-{
-    turn_ = Player::neither;
-    if (board_.num_pieces(0) == 15) {
-        winner_ = Player::dark;
-    } else if (board_.num_pieces(25) == 15) {
-        winner_ = Player::light;
-    }
-}
-
 void Model::advance_turn_()
 {
     if (is_game_over()) {
@@ -244,20 +249,12 @@ void Model::advance_turn_()
     } else if (!(dice_.num_1_active()) && !(dice_.num_2_active())) {
         turn_ = other_player(turn_);
         dice_.roll();
-        if (no_next_moves?_()) {
-            // print something to say skipping player's turn
-            turn_ = other_player(turn_);
-            dice_.roll();
-        }
-    } else if (!(dice_.num_1_active()) || !(dice_.num_2_active())) {
-        if (no_next_moves?_()) {
-            turn_ = other_player(turn_);
-            dice_.roll();
-            if (no_next_moves?_()) {
-                turn_ = other_player(turn_);
-                dice_.roll();
-            }
-        }
+    } else if (no_next_moves?_()) {
+        turn_ = other_player(turn);
+        dice_.roll();
+    }
+    if (no_next_moves?_()) {
+        advance_turn_();
     }
 }
 
