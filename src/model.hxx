@@ -215,16 +215,16 @@ private:
     // does not have an int position
 
     // helper for find_moves_
-    std::vector<int> find_moves_helper_(int pos_start, int dir)
+    std::vector<int> find_moves_helper_(int pos_start, int dir);
 
 //finds the possible moves for a piece at the given position for the
 // current player. Returns a vector of the possible positions, or empty
 // if there's no moves
 //(helper for play_move)
-    std::vector<int> const find_moves_(int pos);
+    std::vector<int> find_moves_(int pos);
 
     // helper for advance_turn_
-    bool no_next_moves?_();
+    bool no_next_moves_();
 
     //advances the turn by setting the turn_ to other_player(turn_),
     // checking for game over, rolling the dice

@@ -39,7 +39,7 @@ public:
 
     //sets the give die (1 or 2) inactive, or both (3)
     void set_inactive(int dice_num);
-s
+
 private:
     std::default_random_engine generator_;
     std::uniform_int_distribution<int> random_{1, 6};
