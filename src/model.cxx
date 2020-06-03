@@ -1,7 +1,7 @@
 #include "model.hxx"
 
-Model::Model()
-        : dice_ (Dice())
+Model::Model(ge211::Random& rand)
+        : dice_ (rand)
 {
     if (dice_.num_1() >= dice_.num_2()) {
         turn_ = Player::dark;
@@ -19,6 +19,8 @@ void Model::play_move(int pos_from, int pos_to)
 {
     if (evaluate_position_(pos_from, pos_to)) {
         really_play_move_(pos_from, pos_to);
+        //set the correct die to inactive
+        inactivate_die(pos_from, pos_to);
         advance_turn_();
     }
 }
@@ -127,6 +129,12 @@ bool Model::evaluate_position_(int pos_from, int pos_to)
                 // can only play pieces equal to or higher than dice
                 // difference between positions must be die value
                 if (turn_ == Player::dark) {
+                    //todo: i dont think these conditions are correct. When i
+                    // got to this stage of the game, i could no longer move
+                    // the pieces and the game was stuck. We need to create a
+                    // model initializer that automatically puts both
+                    // players' pieces in their final stretch so we can
+                    // properly test this.
                     if (dice_.num_1_active() && pos_from >= dice_.num_1() &&
                     pos_to - pos_from == -dice_.num_1()) {
                         return true;
@@ -158,6 +166,10 @@ bool Model::evaluate_position_(int pos_from, int pos_to)
             } else if (turn_ == Player::light) {
                 dir = 1;
             }
+            //if they try to play in an endzone, return false
+            if (pos_to == 0 || pos_to == 25)
+                return false;
+
             if (dice_.num_1_active() && dice_.num_2_active())
                 return pos_from + dice_.num_1() * dir == pos_to || pos_from + dice_
                 .num_2() * dir == pos_to;
@@ -244,8 +256,12 @@ void Model::set_game_over_()
 
 bool Model::no_next_moves_()
 {
-    std::vector<int> temp_moves;
-    for (int i = -1; i <= 25; ++i) {
+    //std::vector<int> temp_moves;
+    if (board_.num_jailed(turn_) > 0) {
+        return find_moves_(-1).empty();
+    }
+
+    for (int i = 1; i <= 24; ++i) {
         if (!(find_moves_(i).empty())) {
             return false;
         }
@@ -266,7 +282,13 @@ void Model::advance_turn_()
         dice_.roll();
     }
     if (no_next_moves_()) {
-        advance_turn_();
+        //advance_turn_();
+        //todo: we should show a message saying that someone's turn was
+        // skipped since they had no moves. otherwise, you can only tell that
+        // this happened due to the fact that the same player ends up being
+        // able to move again
+        turn_ = other_player(turn_);
+        dice_.roll();
     }
 }
 
@@ -293,3 +315,32 @@ void Model::really_play_move_(int pos_from, int pos_to)
     }
 }
 
+void Model::inactivate_die(int pos_from, int pos_to)
+{
+    //todo: i forgot to consider the scenario when all_in_final and leq are
+    // true, so those need to be added
+
+    if (pos_from == -1) {
+        if (turn_ == Player::dark) {
+            if (dice_.num_1_active() && dice_.num_1() == std::abs(pos_to -
+                                                                  25)) {
+                dice_.set_inactive(1);
+            } else if (dice_.num_2_active() && dice_.num_2() == std::abs
+                    (pos_to - 25)){
+                dice_.set_inactive(2);
+            }
+        } else if (turn_ == Player::light) {
+            if (dice_.num_1_active() && dice_.num_1() == pos_to) {
+                dice_.set_inactive(1);
+            } else if (dice_.num_2_active() && dice_.num_2() == pos_to){
+                dice_.set_inactive(2);
+            }
+        }
+    } else if (dice_.num_1_active() && dice_.num_1() == std::abs(pos_to -
+                                                                 pos_from)) {
+        dice_.set_inactive(1);
+    } else if (dice_.num_2_active() && dice_.num_2() == std::abs(pos_to -
+                                                                 pos_from)) {
+        dice_.set_inactive(2);
+    }
+}

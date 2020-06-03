@@ -17,7 +17,7 @@ class Dice
 public:
     //constructs a dice class by randomly generating two ints between 1 and
     // 6, and setting both to active
-    Dice();
+    Dice(ge211::Random&);
 
     //produces new random ints between 1 and 6
     void roll();
@@ -41,8 +41,6 @@ public:
     void set_inactive(int dice_num);
 
 private:
-    std::default_random_engine generator_;
-    std::uniform_int_distribution<int> random_{1, 6};
 
     struct dice_num {
         int num;
@@ -51,4 +49,6 @@ private:
     //randomly generated ints from 1-6
     dice_num num_1_;
     dice_num num_2_;
+
+    ge211::Random& random_;
 };

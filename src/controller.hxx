@@ -1,10 +1,12 @@
 #pragma once
 
-#include "view.hxx"
 #include "model.hxx"
+#include "view.hxx"
+
 
 class Controller : public ge211::Abstract_game
 {
+public:
     explicit Controller();
 
 protected:

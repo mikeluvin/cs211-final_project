@@ -159,7 +159,7 @@ public:
 
 //constructs the default model with the pieces properly intialized at the
 // starting locations
-    Model();
+    explicit Model(ge211::Random&);
 
 //returns whether the game is finished. This is true when one player has all
 //their pieces in their endzone (and turn_ == Player::neither).
@@ -173,9 +173,20 @@ public:
     Player turn() const
     { return turn_ ; }
 
+    //returns the dice
+    Dice dice() const
+    { return dice_; }
+
 //returns the winner
     Player winner() const
     { return winner_; }
+
+    //finds the possible moves for a piece at the given position for the
+    // current player. Returns a vector of the possible positions, or empty
+    // if there's no moves
+    //(helper for play_move)
+    //**I made this public because it will be helpful to show potential moves
+    std::vector<int> find_moves_(int pos);
 
 //attempts to play the move at the given position. If successful, advances
 // the state of the game to the correct player or game over.
@@ -217,11 +228,7 @@ private:
     // helper for find_moves_
     std::vector<int> find_moves_helper_(int pos_start, int dir);
 
-//finds the possible moves for a piece at the given position for the
-// current player. Returns a vector of the possible positions, or empty
-// if there's no moves
-//(helper for play_move)
-    std::vector<int> find_moves_(int pos);
+
 
     // helper for advance_turn_
     bool no_next_moves_();
@@ -240,6 +247,10 @@ private:
 // then advancing the turn and checking for the game to be over
 //(helper for play_move)
     void really_play_move_(int pos_from, int pos_to);
+
+    //sets the correct die to inactive when a move is played.
+    //(helper for play_move)
+    void inactivate_die(int pos_from, int pos_to);
 
 //Test access
     friend struct Test_access;
