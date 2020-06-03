@@ -7,12 +7,6 @@
 #include <ge211.hxx>
 #include <vector>
 
-/*
-#ifndef FINAL_PROJECT_BOARD_HXX
-#define FINAL_PROJECT_BOARD_HXX
-
-#endif //FINAL_PROJECT_BOARD_HXX
-*/
 
 class Board
 {

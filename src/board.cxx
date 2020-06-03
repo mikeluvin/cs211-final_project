@@ -116,7 +116,7 @@ int Board::num_jailed(Player thisplayer)
     } else if (thisplayer == Player::light) {
         return jail_.num_light;
     } else {
-        return NAN; //shouldn't be passing player::neither into here
+        return 0; //shouldn't be passing player::neither into here
     }
 }
 
@@ -128,7 +128,7 @@ int Board::num_endzoned(Player thisplayer)
     } else if (thisplayer == Player::light) {
         return num_pieces(25);
     } else {
-        return NAN;
+        return 0;
     }
 }
 

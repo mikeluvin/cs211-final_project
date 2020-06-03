@@ -5,17 +5,16 @@
 #include "dice.hxx"
 
 
-Dice::Dice()
-        : generator_ ()
-        , num_1_ ({random_(generator_), true})
-        , num_2_ ({random_(generator_), true})
+Dice::Dice(ge211::Random& rand)
+        : random_(rand)
+        , num_1_ ({rand.between(1,6), true})
+        , num_2_ ({rand.between(1,6), true})
 {}
 
 void Dice::roll()
 {
-    num_1_ = {random_(generator_), true};
-    num_2_ = {random_(generator_), true};
-
+    num_1_ = {random_.between(1, 6), true};
+    num_2_ = {random_.between(1, 6), true};
 }
 
 int Dice::num_1() const
@@ -46,11 +45,12 @@ bool Dice::num_2_active() const
 
 void Dice::set_inactive(int dice_num)
 {
-    if (dice_num == 1)
+    if (dice_num == 1) {
         num_1_.active = false;
-    else if (dice_num == 2)
+    } else if (dice_num == 2) {
         num_2_.active = false;
-    else if (dice_num == 3)
+    } else if (dice_num == 3) {
         num_1_.active = false;
         num_2_.active = false;
+    }
 }
