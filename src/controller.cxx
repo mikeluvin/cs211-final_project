@@ -31,7 +31,6 @@ void Controller::on_mouse_up(ge211::Mouse_button, ge211::Position pos)
 
     int b_pos = view_.screen_to_board(pos);
 
-
     //this means that this is the first click of the sequence
     if (from_pos_ == -2 && to_pos_ == -2) {
         //if there's no moves to be had there, you can't click on it
@@ -48,6 +47,3 @@ void Controller::on_mouse_up(ge211::Mouse_button, ge211::Position pos)
         to_pos_ = -2;
     }
 }
-
-
-

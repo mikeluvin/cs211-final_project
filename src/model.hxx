@@ -171,7 +171,7 @@ public:
 
 //returns the current turn
     Player turn() const
-    { return turn_ ; }
+    { return turn_; }
 
     //returns the dice
     Dice dice() const
@@ -186,7 +186,7 @@ public:
     // if there's no moves
     //(helper for play_move)
     //**I made this public because it will be helpful to show potential moves
-    std::vector<int> find_moves_(int pos);
+    std::vector<int> find_moves_(int pos) const;
 
 //attempts to play the move at the given position. If successful, advances
 // the state of the game to the correct player or game over.
@@ -208,17 +208,17 @@ private:
 
 //checks whether all of the current Player's pieces are in the final section
 //(helper for evaluate_position_)
-    bool all_in_final_();
+    bool all_in_final_() const;
 
 //checks if the dice are greater than or equal to the Player's pieces are
 // away from the endzone
 //(helper for evaluate_position, to be used after all_in_final_ is checked)
-    bool leq_dice_();
+    bool leq_die_(int dice_num) const;
 
 //determines whether the current Player can move their piece from pos_from
 // to the given position pos_to. Returns true if they can, false otherwise
 //(helper for find_moves_)
-    bool evaluate_position_(int pos_from, int pos_to);
+    bool evaluate_position_(int pos_from, int pos_to) const;
 
     //we need a function that checks if the current player has a piece in
     // jail, then does all the necessary moves to get all the pieces out of
@@ -226,9 +226,7 @@ private:
     // does not have an int position
 
     // helper for find_moves_
-    std::vector<int> find_moves_helper_(int pos_start, int dir);
-
-
+    std::vector<int> find_moves_helper_(int pos_start, int dir) const;
 
     // helper for advance_turn_
     bool no_next_moves_();
@@ -254,5 +252,4 @@ private:
 
 //Test access
     friend struct Test_access;
-
 };

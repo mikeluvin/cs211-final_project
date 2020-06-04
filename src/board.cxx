@@ -18,16 +18,28 @@ Board::Board(bool init)
         positions_[17] = {3, Player::light};
         positions_[12] = {5, Player::light};
         positions_[1] = {2, Player::light};
+    } else {
+        // for testing logic at end of game
+
+        positions_[1] = {5, Player::dark};
+        positions_[2] = {3, Player::dark};
+        positions_[3] = {5, Player::dark};
+        positions_[4] = {2, Player::dark};
+
+        positions_[24] = {5, Player::light};
+        positions_[23] = {3, Player::light};
+        positions_[22] = {5, Player::light};
+        positions_[21] = {2, Player::light};
     }
 }
 
-int Board::num_pieces(int pos)
+int Board::num_pieces(int pos) const
 {
     return positions_[pos].num_pieces;
 }
 
 //returns the player at the given position on the board.
-Player Board::player(int pos)
+Player Board::player(int pos) const
 {
     return positions_[pos].player;
 }
@@ -109,7 +121,7 @@ void Board::send_to_endzone(int pos)
 }
 
 //returns number of jailed pieces for given player
-int Board::num_jailed(Player thisplayer)
+int Board::num_jailed(Player thisplayer) const
 {
     if (thisplayer == Player::dark) {
         return jail_.num_dark;
@@ -121,7 +133,7 @@ int Board::num_jailed(Player thisplayer)
 }
 
 //returns number of endzoned pieces for given player
-int Board::num_endzoned(Player thisplayer)
+int Board::num_endzoned(Player thisplayer) const
 {
     if (thisplayer == Player::dark) {
         return num_pieces(0);
@@ -134,7 +146,7 @@ int Board::num_endzoned(Player thisplayer)
 
 //returns a vector of the positions of the pieces in the player's final stretch
 // for the given player
-std::vector<int> Board::pos_final(Player thisplayer)
+std::vector<int> Board::pos_final(Player thisplayer) const
 {
     std::vector<int> result{};
 

@@ -1,4 +1,5 @@
 #include "model.hxx"
+#include <iostream>
 
 Model::Model(ge211::Random& rand)
         : dice_ (rand)
@@ -34,7 +35,7 @@ void Model::play_move(int pos_from, int pos_to)
 
 //checks whether all of the current Player's pieces are in the final section
 //(helper for evaluate_position_)
-bool Model::all_in_final_()
+bool Model::all_in_final_() const
 {
     std::vector<int> pos_vec = board_.pos_final(turn_);
     int final_count = 0;
@@ -50,22 +51,26 @@ bool Model::all_in_final_()
 //checks if the dice are greater than the Player's pieces are away from
 // the endzone
 //(helper for evaluate_position, to be used after all_in_final_ is checked)
-bool Model::leq_dice_()
+bool Model::leq_die_(int dice_num) const
 {
     std::vector<int> pos_vec = board_.pos_final(turn_);
+
+    int num_on_die;
+    if (dice_num == 1) {
+        num_on_die = dice_.num_1();
+    } else if (dice_num == 2) {
+        num_on_die = dice_.num_2();
+    }
 
     //the pos_vec is formatted such that the farthest space away from the
     // endzone is the last element in the vector
     // if both dice are greater than the last space, then there's no move
     if (turn_ == Player::dark) {
-        return (dice_.num_1_active() && dice_.num_1() >= pos_vec.back()) ||
-        (dice_.num_2_active() && dice_.num_2() >= pos_vec.back());
+        return num_on_die >= pos_vec.back();
     } else if (turn_ == Player::light) {
         // map 19 to 6, 24 to 1 so we can correctly compare the dice to the
         // positions
-        return (dice_.num_1_active() && dice_.num_1() >=
-        std::abs(pos_vec.back() - 25)) || (dice_.num_2_active() &&
-        dice_.num_2() >= std::abs(pos_vec.back() - 25));
+        return num_on_die >= std::abs(pos_vec.back() - 25);
     }
     return false;
 }
@@ -77,7 +82,7 @@ bool Model::leq_dice_()
 //we're going to need some variable in the controller to store the position
 // of the first click (the selected piece) and the position of the second
 // click (where the selected piece is being moved to)
-bool Model::evaluate_position_(int pos_from, int pos_to)
+bool Model::evaluate_position_(int pos_from, int pos_to) const
 {
     // -1 represents the position of the jail (but isn't actually the position
     // of the jail)
@@ -113,9 +118,152 @@ bool Model::evaluate_position_(int pos_from, int pos_to)
 
         //check if all are in final first, otherwise it's normal gameplay
         if (all_in_final_()) {
-            if (leq_dice_()) {
-                // can only play piece farthest from endzone
-                // not necessary to match die value
+            if (dice_.num_1_active() && dice_.num_2_active()) {
+                if (leq_die_(1) && leq_die_(2)) {
+                    if (turn_ == Player::dark && pos_to == 0 && pos_from ==
+                            board_.pos_final(turn_).back()) {
+                        return true;
+                    } else if (turn_ == Player::light && pos_to == 25 &&
+                            pos_from == board_.pos_final(turn_).back()) {
+                        return true;
+                    }
+                } else if (leq_die_(1)) {
+                    //both active, only dice 1 leq
+                    //implies dice 1 > dice 2
+                    if (turn_ == Player::dark) {
+                        if (pos_to - pos_from == -dice_.num_2()) {
+                            return true;
+                        } else if (pos_to == 0 && pos_from == board_
+                        .pos_final(turn_).back()) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else if (turn_ == Player::light) {
+                        if (pos_to - pos_from == dice_.num_2()) {
+                            return true;
+                        } else if (pos_to == 25 && pos_from == board_
+                        .pos_final(turn_).back()) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                } else if (leq_die_(2)) {
+                    //both active, only dice 2 leq
+                    if (turn_ == Player::dark) {
+                        if (pos_to - pos_from == -dice_.num_1()) {
+                            return true;
+                        } else if (pos_to == 0 && pos_from == board_
+                        .pos_final(turn_).back()) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else if (turn_ == Player::light) {
+                        if (pos_to - pos_from == dice_.num_1()) {
+                            return true;
+                        } else if (pos_to == 25 && pos_from == board_
+                        .pos_final(turn_).back()) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                } else {
+                    //both active, neither leq
+                    if (turn_ == Player::dark) {
+                        if (pos_to - pos_from == -dice_.num_1() || pos_to -
+                        pos_from == -dice_.num_2()) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else if (turn_ == Player::light) {
+                        if (pos_to - pos_from == dice_.num_1() || pos_to -
+                        pos_from == dice_.num_2()) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+            } else if (dice_.num_1_active()) {
+                //only dice 1 active
+                if (leq_die_(1)) {
+                    //only dice 1 active and leq
+                    if (turn_ == Player::dark) {
+                        if (pos_to == 0 && pos_from == board_.pos_final
+                        (turn_).back()) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else if (turn_ == Player::light) {
+                        if (pos_to == 25 && pos_from == board_.pos_final
+                        (turn_).back()) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                } else {
+                    //only dice 1 active and dice 1 not leq
+                    if (turn_ == Player::dark) {
+                        if (pos_to - pos_from == -dice_.num_1()) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else if (turn_ == Player::light) {
+                        if (pos_to - pos_from == dice_.num_1()) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+            } else if (dice_.num_2_active()) {
+                //only dice 2 active
+                if (leq_die_(2)) {
+                    //only dice 2 active and leq
+                    if (turn_ == Player::dark) {
+                        if (pos_to == 0 && pos_from == board_.pos_final
+                        (turn_).back()) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else if (turn_ == Player::light) {
+                        if (pos_to == 25 && pos_from == board_.pos_final
+                        (turn_).back()) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                } else {
+                    //only dice 2 active and dice 2 not leq
+                    if (turn_ == Player::dark) {
+                        if (pos_to - pos_from == -dice_.num_2()) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else if (turn_ == Player::light) {
+                        if (pos_to - pos_from == dice_.num_2()) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+            } else {
+                //neither active
+                return false;
+            }
+            /*
+            //all until normal gameplay irrelevant
                 if (turn_ == Player::dark && pos_to == 0 && pos_from ==
                 board_.pos_final(turn_).back()) {
                     return true;
@@ -125,7 +273,8 @@ bool Model::evaluate_position_(int pos_from, int pos_to)
                 } else {
                     return false;
                 }
-            } else {
+            //}
+            else {
                 // can only play pieces equal to or higher than dice
                 // difference between positions must be die value
                 if (turn_ == Player::dark) {
@@ -156,6 +305,7 @@ bool Model::evaluate_position_(int pos_from, int pos_to)
                     }
                 }
             }
+             */
         } else {
             //normal gameplay when not all are in final, no one in jail, and
             // the spot has 1 or less of the other player's pieces
@@ -184,9 +334,10 @@ bool Model::evaluate_position_(int pos_from, int pos_to)
 
 // dir is 1 (for light) or -1 (for dark)
 // pos_start is the piece's position before any move
-std::vector<int> Model::find_moves_helper_(int pos_start, int dir)
+std::vector<int> Model::find_moves_helper_(int pos_start, int dir) const
 {
     std::vector<int> result;
+
     if (dice_.num_1_active() && dice_.num_2_active()) {
         if (board_.player(pos_start + dice_.num_1() * dir) == turn_ ||
         board_.num_pieces(pos_start + dice_.num_1() * dir) <= 1) {
@@ -196,33 +347,63 @@ std::vector<int> Model::find_moves_helper_(int pos_start, int dir)
         board_.num_pieces(pos_start + dice_.num_2() * dir) <= 1) {
             result.push_back(pos_start + dice_.num_2() * dir);
         }
+        /*
+        if (evaluate_position_(pos_start, pos_start + dice_.num_1() * dir) ||
+        evaluate_position_(pos_start, pos_start + dice_.num_1() * dir)) {
+            result.push_back(pos_start + dice_.num_1() * dir);
+        }
+        if (evaluate_position_(pos_start, pos_start + dice_.num_2() * dir) ||
+            evaluate_position_(pos_start, pos_start + dice_.num_2() * dir)) {
+            result.push_back(pos_start + dice_.num_2() * dir);
+        }*/
     } else if (dice_.num_1_active()) {
         if (board_.player(pos_start + dice_.num_1() * dir) == turn_ ||
         board_.num_pieces(pos_start + dice_.num_1() * dir) <= 1) {
             result.push_back(pos_start + dice_.num_1() * dir);
         }
+        /*
+        if (evaluate_position_(pos_start, pos_start + dice_.num_1() * dir) ||
+            evaluate_position_(pos_start, pos_start + dice_.num_1() * dir)) {
+            result.push_back(pos_start + dice_.num_1() * dir);
+        }
+         */
     } else if (dice_.num_2_active()) {
         if (board_.player(pos_start + dice_.num_2() * dir) == turn_ ||
         board_.num_pieces(pos_start + dice_.num_2() * dir) <= 1) {
             result.push_back(pos_start + dice_.num_2() * dir);
         }
+
+        /*
+        if (evaluate_position_(pos_start, pos_start + dice_.num_2() * dir) ||
+            evaluate_position_(pos_start, pos_start + dice_.num_2() * dir)) {
+            result.push_back(pos_start + dice_.num_2() * dir);
+        }*/
     } else {
         result = {};
     }
 
+    //std::vector<int> actual_result;
+/*
     for (int i = 0; i < result.size(); ++i) {
-        if (dir == -1 && result[i] < 0) {
+        if (result[i] < 0) {
             result[i] = 0;
-        } else if (dir == 1 && result[i] > 25) {
+        } else if (result[i] > 25) {
             result[i] = 25;
         }
+        //if (evaluate_position_(pos_start, result[i])) {
+        //    actual_result.push_back(result[i]);
+        //}
     }
+    */
+
+    //return actual_result;
+
 
     return result;
 }
 
 // pos represents the piece that we're starting with
-std::vector<int> Model::find_moves_(int pos)
+std::vector<int> Model::find_moves_(int pos) const
 {
     if (pos == -1 && board_.num_jailed(turn_) > 0) {
         if (turn_ == Player::dark) {
@@ -336,11 +517,76 @@ void Model::inactivate_die(int pos_from, int pos_to)
                 dice_.set_inactive(2);
             }
         }
-    } else if (dice_.num_1_active() && dice_.num_1() == std::abs(pos_to -
-                                                                 pos_from)) {
-        dice_.set_inactive(1);
-    } else if (dice_.num_2_active() && dice_.num_2() == std::abs(pos_to -
-                                                                 pos_from)) {
+    } else if (all_in_final_()) {
+        if (dice_.num_1_active() && dice_.num_2_active()) {
+            if (leq_die_(1) && leq_die_(2)) {
+                dice_.set_inactive(1);
+            } else if (leq_die_(1)) {
+                if (turn_ == Player::dark) {
+                    if (pos_to - pos_from == -dice_.num_2()) {
+                        dice_.set_inactive(2);
+                    } else {
+                        dice_.set_inactive(1);
+                    }
+                } else if (turn_ == Player::light) {
+                    if (pos_to - pos_from == dice_.num_2()) {
+                        dice_.set_inactive(2);
+                    } else {
+                        dice_.set_inactive(1);
+                    }
+                }
+            } else if (leq_die_(2)) {
+                if (turn_ == Player::dark) {
+                    if (pos_to - pos_from == -dice_.num_1()) {
+                        dice_.set_inactive(1);
+                    } else {
+                        dice_.set_inactive(2);
+                    }
+                } else if (turn_ == Player::light) {
+                    if (pos_to - pos_from == dice_.num_1()) {
+                        dice_.set_inactive(1);
+                    } else {
+                        dice_.set_inactive(2);
+                    }
+                }
+            } else {
+                //both active, not leq for either
+                if (turn_ == Player::dark) {
+                    if (pos_to - pos_from == -dice_.num_1()) {
+                        dice_.set_inactive(1);
+                    } else if (pos_to - pos_from == -dice_.num_2()) {
+                        dice_.set_inactive(2);
+                    }
+                } else if (turn_ == Player::light) {
+                    if (pos_to - pos_from == dice_.num_1()) {
+                        dice_.set_inactive(1);
+                    } else if (pos_to - pos_from == dice_.num_2()) {
+                        dice_.set_inactive(2);
+                    }
+                }
+            }
+        } else if (dice_.num_1_active()) {
+            dice_.set_inactive(1);
+        } else if (dice_.num_2_active()) {
+            dice_.set_inactive(2);
+        }
+    } else if (dice_.num_1_active() && dice_.num_2_active()) {
+        if (turn_ == Player::dark) {
+            if (pos_to - pos_from == -dice_.num_1()) {
+                dice_.set_inactive(1);
+            } else if (pos_to - pos_from == -dice_.num_2()) {
+                dice_.set_inactive(2);
+            }
+        } else if (turn_ == Player::light) {
+            if (pos_to - pos_from == dice_.num_1()) {
+                dice_.set_inactive(1);
+            } else if (pos_to - pos_from == dice_.num_2()) {
+                dice_.set_inactive(2);
+            }
+        }
+    } else if (dice_.num_2_active()) {
         dice_.set_inactive(2);
+    } else if (dice_.num_1_active()) {
+        dice_.set_inactive(1);
     }
 }

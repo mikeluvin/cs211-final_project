@@ -10,7 +10,7 @@
 class View
 {
 public:
-    explicit View(Model const&); //make this model constant after i test one
+    explicit View(Model const&); //make this model constant after I test one
     // thing
 
     //pass in the mouse position of the piece we want to move, and the
@@ -29,8 +29,34 @@ public:
     //takes a given screen position and maps it to its location on the board
     int screen_to_board(ge211::Position) const;
 
+    void show_possible_moves(int pos_from);
+
 private:
+    int board_start_x_ = 86;
+    int board_top_y_ = 21;
+    int board_bot_y_ = 528;
+    int token_spacing_x_ = 50;
+    int token_diameter_ = 44; //diameter of tokens
+    int board_rhs_x_ = 401 + token_diameter_/2;
+    int jail_x_ = 400 - token_diameter_/2;
+    int jail_y_ = 255;
+    int endzone_x_ = 736;
+    int l_end_y_ = 227;
+    int d_end_y_ = 351;
+    int endzone_spacing_ = 14;
+    int endzone_width_ = 50;
+    double dice_scale_ = 0.4;
+    int highlight_width_ = 44;
+    int highlight_height_ = 15;
+
+    ge211::Position dice_1_pos_ = {17, 250};
+    ge211::Position dice_2_pos_ = {17, 300};
+
     Model const& model_;
+    //Model model_;
+
+    //int triangle_width_ = 42;
+    //int triangle_height_ = 242;
 
     //stores the location of the outermost (the clickable) pieces. dark jail
     // is index 26, light jail is index 27
@@ -50,6 +76,11 @@ private:
 
     ge211::Rectangle_sprite
             l_endzone_sprite_ {{50,13}, {210, 210, 210}};
+
+    //to show possible moves
+    ge211::Rectangle_sprite
+            highlight_sprite_ {{44, 15}, {100, 255,
+                                                                 100}};
 
     ge211::Image_sprite
             dice_1_sprite_    {"side1.png"};
@@ -71,9 +102,4 @@ private:
 
     //helper to place the dice
     void render_dice(ge211::Sprite_set&, int);
-
-
-
 };
-
-

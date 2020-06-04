@@ -17,10 +17,10 @@ public:
     Board(bool init);
 
 //returns the number of pieces at the given position on the board.
-    int num_pieces(int pos);
+    int num_pieces(int pos) const;
 
 //returns the player at the given position on the board.
-    Player player(int pos);
+    Player player(int pos) const;
 
 //clears the given position, making num_pieces == 0 and Player ==
 // Player::neither.
@@ -42,14 +42,14 @@ public:
     void send_to_endzone(int pos);
 
 //returns number of jailed pieces for given player
-    int num_jailed(Player player);
+    int num_jailed(Player player) const;
 
 //returns number of endzoned pieces for given player
-    int num_endzoned(Player player);
+    int num_endzoned(Player player) const;
 
 //returns a vector of the positions of the pieces in the player's final stretch
 // for the given player
-    std::vector<int> pos_final(Player);
+    std::vector<int> pos_final(Player) const;
 
 private:
 
