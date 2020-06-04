@@ -156,7 +156,6 @@ std::vector<int> Board::pos_final(Player thisplayer) const
                 result.push_back(i);
             }
         }
-        return result;
 
     } else if (thisplayer == Player::light) {
         //doing this loop this way so that we start at one space away from
@@ -166,7 +165,6 @@ std::vector<int> Board::pos_final(Player thisplayer) const
                 result.push_back(i);
             }
         }
-        return result;
     }
 
     return result;

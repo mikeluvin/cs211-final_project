@@ -27,8 +27,6 @@ void Controller::on_mouse_move(ge211::Position)
 
 void Controller::on_mouse_up(ge211::Mouse_button, ge211::Position pos)
 {
-    //todo, definitely need this one
-
     int b_pos = view_.screen_to_board(pos);
 
     //this means that this is the first click of the sequence
