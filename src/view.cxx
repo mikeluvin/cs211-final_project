@@ -150,13 +150,15 @@ void View::draw(ge211::Sprite_set& set, int from, int to)
 
 void View::show_winner(ge211::Sprite_set& set)
 {
-    if (model_.winner() == Player::dark) {
+    if (model_.winner() == Player::dark && win_sprite_updated_ == false) {
         builder_.add_message("Dark Wins!");
-    } else if (model_.winner() == Player::light) {
+        win_sprite_updated_ = true;
+    } else if (model_.winner() == Player::light && win_sprite_updated_ == false) {
         builder_.add_message("Light Wins!");
+        win_sprite_updated_ = true;
     }
     win_sprite_.reconfigure(builder_);
-    set.add_sprite(win_sprite_, {200, 200}, 1);
+    set.add_sprite(win_sprite_, {225, 225}, 1);
 }
 
 ge211::Position View::board_to_screen(int b_pos) const

@@ -18,10 +18,16 @@ bool Model::is_game_over() const
 
 void Model::play_move(int pos_from, int pos_to)
 {
-    if (evaluate_position_(pos_from, pos_to)) {
+    if (winner_ == Player::neither && evaluate_position_(pos_from, pos_to)) {
         really_play_move_(pos_from, pos_to);
+
         //set the correct die to inactive
+        // this is being called
         inactivate_die(pos_from, pos_to);
+
+        // this is not being called
+        // here is the first thing that isn't being called
+        // something's happening with inactivate die
         advance_turn_();
     }
 }
@@ -48,8 +54,6 @@ bool Model::all_in_final_() const
     return final_count == 15;
 }
 
-
-
 //checks if the dice are greater than the Player's pieces are away from
 // the endzone
 //(helper for evaluate_position, to be used after all_in_final_ is checked)
@@ -68,11 +72,19 @@ bool Model::leq_die_(int dice_num) const
     // endzone is the last element in the vector
     // if both dice are greater than the last space, then there's no move
     if (turn_ == Player::dark) {
-        return num_on_die > pos_vec.back();
+        if (pos_vec.empty()) {
+            return true;
+        } else {
+            return num_on_die > pos_vec.back();
+        }
     } else if (turn_ == Player::light) {
         // map 19 to 6, 24 to 1 so we can correctly compare the dice to the
         // positions
-        return num_on_die > std::abs(pos_vec.back() - 25);
+        if (pos_vec.empty()) {
+            return true;
+        } else {
+            return num_on_die > std::abs(pos_vec.back() - 25);
+        }
     }
     return false;
 }
@@ -122,17 +134,6 @@ bool Model::evaluate_position_(int pos_from, int pos_to) const
                 return dice_.num_2() == pos_to;
             }
         }
-
-    /*
-        } else if (turn_ == Player::light && !(pos_to >= 1 && pos_to <= 6)) {
-            return false;
-        } else if (board_.player(pos_to) == other_player(turn_) &&
-        board_.num_pieces(pos_to) > 1) {
-            return false;
-        } else {
-            return true;
-        }
-        */
     } else if (pos_from == -1 && board_.num_jailed(turn_) == 0) {
         return false;
     }
@@ -365,7 +366,6 @@ std::vector<int> Model::find_moves_helper_(int pos_start, int dir) const
 // pos represents the piece that we're starting with
 std::vector<int> Model::find_moves_(int pos) const
 {
-
     if (pos == -1 && board_.num_jailed(turn_) > 0) {
         if (turn_ == Player::dark) {
             return find_moves_helper_(-1, -1);

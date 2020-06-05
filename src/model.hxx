@@ -53,7 +53,7 @@ public:
 private:
     Player turn_;
     Player winner_ = Player::neither;
-    Board board_ = Board(false);
+    Board board_ = Board(true);
     Dice dice_;
 
 //
@@ -88,8 +88,6 @@ private:
     //advances the turn by setting the turn_ to other_player(turn_),
     // checking for game over, rolling the dice
     void advance_turn_();
-
-    void start_win_timer();
 
 //checks to see if a player has all 15 pieces in their endzone, and if
 // true, sets that player to the winner and turn_ to Player::neither

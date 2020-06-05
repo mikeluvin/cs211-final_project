@@ -2,16 +2,13 @@
 // Created by mjluv on 6/1/2020.
 //
 #pragma once
-
 #include "model.hxx"
 #include <vector>
-
 
 class View
 {
 public:
-    explicit View(Model const&); //make this model constant after I test one
-    // thing
+    explicit View(Model const&);
 
     //pass in the mouse position of the piece we want to move, and the
     // position we want to move it to
@@ -49,6 +46,8 @@ private:
     int highlight_width_ = 44;
     int highlight_height_ = 15;
 
+    bool win_sprite_updated_ = false;
+
     ge211::Position dice_1_pos_ = {17, 250};
     ge211::Position dice_2_pos_ = {17, 300};
 
@@ -79,8 +78,8 @@ private:
 
     //to show possible moves
     ge211::Rectangle_sprite
-            highlight_sprite_ {{44, 15}, {100, 255,
-                                                                 100}};
+            highlight_sprite_ {{highlight_width_, highlight_height_}, {100,
+                                                                       255,100}};
 
     ge211::Image_sprite
             dice_1_sprite_    {"side1.png"};
@@ -104,10 +103,9 @@ private:
     void render_dice(ge211::Sprite_set&, int);
 
     ge211::Font sans72 {"sans.ttf", 72};
-    ge211::Font sans30 {"sans.ttf", 30};
 
     ge211::Text_sprite win_sprite_;
 
     ge211::Text_sprite::Builder builder_;
-    ge211::Color builder_color_ = {255, 153, 51};
+    ge211::Color builder_color_ = {204, 204, 255};
 };

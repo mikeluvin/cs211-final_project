@@ -1,4 +1,5 @@
 #include "controller.hxx"
+#include <iostream>
 
 Controller::Controller()
         : model_(get_random())
@@ -7,7 +8,7 @@ Controller::Controller()
 
 void Controller::draw(ge211::Sprite_set& sprites)
 {
-    if (model_.is_game_over() && model_.turn() == Player::neither) {
+    if (model_.winner() != Player::neither) {
         view_.show_winner(sprites);
     } else {
         view_.draw(sprites, from_pos_, to_pos_);
