@@ -7,7 +7,12 @@
 class Controller : public ge211::Abstract_game
 {
 public:
-    explicit Controller();
+    //takes the board initializer value.
+    // board_state = 1 is the normal game
+    // board_state = 0 is with dark being one piece away from winning
+    // board_state = 2 is to show the skipped turn message (when a player has
+    // no moves).
+    explicit Controller(int board_state);
 
 protected:
     void on_mouse_move(ge211::Position) override;

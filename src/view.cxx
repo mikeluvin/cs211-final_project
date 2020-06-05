@@ -30,6 +30,27 @@ void View::draw(ge211::Sprite_set& set, int from, int to)
     // at those positions. We'll iterate over the entire board from 1 to 24.
     // The jail and the endzones will be treated separately.
 
+    //display who's turn it is
+    set.add_sprite(turn_sprite_, {740, 250}, 1);
+    if (model_.turn() == Player::dark) {
+        set.add_sprite(dark_sprite_, {740, 285}, 1);
+    } else if (model_.turn() == Player::light) {
+        set.add_sprite(light_sprite_, {740, 285}, 1);
+    }
+
+    //see if someone's turn got skipped/if there's no more moves for the
+    // player, and display a message
+    if (model_.no_more_moves()){
+        //draw the sprite
+        set.add_sprite(msg_box_sprite_, {109, 280}, 1);
+        set.add_sprite(no_moves_sprite_, {109, 280}, 2);
+    }
+    if (model_.skipped_turn()) {
+        //draw
+        set.add_sprite(msg_box_sprite_, {440, 280}, 1);
+        set.add_sprite(skipped_sprite_, {452, 280}, 2);
+    }
+
     //the top and the bottom need to be treated separately.
     //bottom row
     for (int i = 1; i <= 12; ++i) {
@@ -150,16 +171,17 @@ void View::draw(ge211::Sprite_set& set, int from, int to)
 
 void View::show_winner(ge211::Sprite_set& set)
 {
-    if (model_.winner() == Player::dark && win_sprite_updated_ == false) {
+    if (model_.winner() == Player::dark && !win_sprite_updated_) {
         builder_.add_message("Dark Wins!");
         win_sprite_updated_ = true;
-    } else if (model_.winner() == Player::light && win_sprite_updated_ == false) {
+    } else if (model_.winner() == Player::light && !win_sprite_updated_) {
         builder_.add_message("Light Wins!");
         win_sprite_updated_ = true;
     }
     win_sprite_.reconfigure(builder_);
     set.add_sprite(win_sprite_, {225, 225}, 1);
 }
+
 
 ge211::Position View::board_to_screen(int b_pos) const
 {

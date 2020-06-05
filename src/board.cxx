@@ -5,39 +5,42 @@
 #include "board.hxx"
 #include "player.hxx"
 
-Board::Board(bool init)
+Board::Board(int board_state)
         : jail_ {0, 0}
 {
-    if (init) {
-        positions_[6] = {5, Player::dark};
-        positions_[8] = {3, Player::dark};
+    if (board_state == 2) {
+        //for testing the 'skipped turn' messages
+        jail_ = {0, 2};
+        positions_[1] = {2, Player::dark};
+        positions_[2] = {2, Player::dark};
+        positions_[3] = {2, Player::dark};
+        positions_[4] = {2, Player::dark};
+        positions_[5] = {2, Player::dark};
+        positions_[6] = {2, Player::dark};
+        positions_[7] = {3, Player::dark};
+
+        positions_[10] = {6, Player::light};
+        positions_[13] = {7, Player::light};
+
+    } else if (board_state == 0) {
+        // for testing logic at end of game
+        positions_[0] = {14, Player::dark};
+        positions_[1] = {1, Player::dark};
+
+        positions_[24] = {5, Player::light};
+        positions_[23] = {10, Player::light};
+
+    } else {
+        //default setup
+        positions_[6]  = {5, Player::dark};
+        positions_[8]  = {3, Player::dark};
         positions_[13] = {5, Player::dark};
         positions_[24] = {2, Player::dark};
 
         positions_[19] = {5, Player::light};
         positions_[17] = {3, Player::light};
         positions_[12] = {5, Player::light};
-        positions_[1] = {2, Player::light};
-    } else {
-        // for testing logic at end of game
-
-        /*
-        positions_[1] = {5, Player::dark};
-        positions_[2] = {3, Player::dark};
-        positions_[3] = {5, Player::dark};
-        positions_[4] = {2, Player::dark};
-
-        positions_[24] = {5, Player::light};
-        positions_[23] = {3, Player::light};
-        positions_[22] = {5, Player::light};
-        positions_[21] = {2, Player::light};
-         */
-
-        positions_[0] = {14, Player::dark};
-        positions_[1] = {1, Player::dark};
-
-        positions_[24] = {5, Player::light};
-        positions_[23] = {10, Player::light};
+        positions_[1]  = {2, Player::light};
     }
 }
 

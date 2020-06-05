@@ -8,6 +8,11 @@
 // These tests should demonstrate at least six of the functional
 // requirements.
 //
+
+struct Random_test_access
+{
+    ge211::Random random;
+};
 struct Test_access
 {
     Model& model_;
@@ -46,43 +51,59 @@ TEST_CASE("Board initialization")
 {
     Board board = Board(true);
     //makes sure the board is properly initialized
-    CHECK( board.num_pieces(5) == 5 );
-    CHECK( board.num_pieces(7) == 3 );
+    CHECK( board.num_pieces(6) == 5 );
+    CHECK( board.num_pieces(8) == 3 );
+    CHECK( board.num_pieces(13) == 5 );
+    CHECK( board.num_pieces(24) == 2 );
+
+    CHECK( board.num_pieces(1) == 2 );
     CHECK( board.num_pieces(12) == 5 );
-    CHECK( board.num_pieces(23) == 2 );
+    CHECK( board.num_pieces(17) == 3 );
+    CHECK( board.num_pieces(19) == 5 );
 }
 
 //requirement 11
 TEST_CASE("Dice roll")
 {
-    Dice mydice = Dice(ge211::Abstract_game::get_random());
+    Random_test_access r;
+    Dice mydice = Dice(r.random);
     mydice.roll();
     //makes sure dice produce ints between 1 and 6
-    CHECK( mydice.num_1() >= 1 && mydice.num_1() <= 6 );
-    CHECK( mydice.num_2() >= 1 && mydice.num_2() <= 6 );
+    CHECK( mydice.num_1() >= 1);
+    CHECK( mydice.num_1() <= 6);
+    CHECK( mydice.num_2() >= 1);
+    CHECK( mydice.num_1() <= 6);
+
 }
 
 //requirements 2 and 4
 TEST_CASE("Model::evaluate_position()")
 {
-    Model model{};
+    Random_test_access r;
+    Model model{r.random, 1, 5, Player::dark};
     Test_access t{model};
 
-    //for now just assuming dark goes clockwise, light goes counterclockwise
-    t.turn() = Player::dark;
+    //dark goes CCW, light goes CW
 
-    //making sure dark can only go CW
-    CHECK_FALSE( t.evaluate_position(12, 10 ) );
-    CHECK( t.evaluate_position(12, 13) );
+    //making sure dark can only go CCW
+    CHECK_FALSE( t.evaluate_position(13, 14 ));
+    //dark tries to play where dark already has >1 piece, a valid move
+    CHECK( t.evaluate_position(13, 8));
+    //tries to play at a position not indicated on the dice
+    CHECK_FALSE( t.evaluate_position(6, 4));
+    //tries to play where light already has >1 piece, an invalid move
+    //(requirement 4)
+    CHECK_FALSE( t.evaluate_position(13, 12));
 
-    //light only CCW
+    //light only CW
     t.turn() = Player::light;
-    CHECK_FALSE( t.evaluate_position(11, 13) );
-    CHECK( t.evaluate_position(11, 9) );
+    //value not indicated on the dice
+    CHECK_FALSE( t.evaluate_position(12, 14));
+    //dark >1 piece
+    CHECK_FALSE( t.evaluate_position(12, 13));
+    //valid move
+    CHECK( t.evaluate_position(17, 18));
 
-    //checks to make sure you can't move where the other player has more than
-    // one piece (requirement 4)
-    CHECK_FALSE(t.evaluate_position(18, 12));
 }
 
 //requirement 5
@@ -92,32 +113,53 @@ TEST_CASE("Jail")
 
     //player::dark is initially at 12
     //checks that a piece is sent to jail
-    board.send_to_jail(12);
+    board.send_to_jail(13);
     CHECK( board.num_jailed(Player::dark) == 1 );
-    CHECK( board.num_pieces(12) == 4 );
+    CHECK( board.num_pieces(13) == 4 );
 
     //checks that a piece can be removed from jail
-    board.remove_from_jail(12, Player::dark);
+    board.remove_from_jail(13, Player::dark);
     CHECK( board.num_jailed(Player::dark) == 0 );
-    CHECK( board.num_pieces(12) == 5 );
+    CHECK( board.num_pieces(13) == 5 );
 }
 
 //requirement 7
 TEST_CASE("all pieces in final section")
 {
-    Model model = Model();
+    Random_test_access r;
+    Model model = Model(r.random);
     Test_access t{model};
 
+    t.turn() = Player::dark;
     CHECK_FALSE(t.all_in_final());
+    t.turn() = Player::light;
+    CHECK_FALSE(t.all_in_final());
+
+    //given an initial state where dark is one move away from winning,
+    Model model2 = Model(r.random, false);
+    Test_access t2{model2};
+    t2.turn() = Player::dark;
+    CHECK(t2.all_in_final());
+    //all of light's pieces are in the final section too
+    t2.turn() = Player::light;
+    CHECK(t2.all_in_final());
 }
 
 //requirement 10
 TEST_CASE("advance a turn")
 {
-    Model model = Model();
+    Random_test_access r;
+    Model model = Model(r.random, 1, 3, Player::dark);
     Test_access t{model};
 
-    t.turn() = Player::dark;
-    t.play_move(13);
+    //not a valid move (backwards)
+    t.play_move(13, 12);
+    CHECK( t.turn() == Player::dark);
+
+    //a valid move
+    t.play_move(24, 21);
+    //still has one more move
+    CHECK( t.turn() == Player::dark);
+    t.play_move(21, 20);
     CHECK( t.turn() == Player::light);
 }

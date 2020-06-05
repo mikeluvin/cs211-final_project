@@ -5,25 +5,21 @@
 
 #include <ge211.hxx>
 #include <random>
-/*
-#ifndef FINAL_PROJECT_DICE_HXX
-#define FINAL_PROJECT_DICE_HXX
 
-#endif //FINAL_PROJECT_DICE_HXX
-*/
 
 class Dice
 {
 public:
     //constructs a dice class by randomly generating two ints between 1 and
     // 6, and setting both to active
-    Dice(ge211::Random&);
+    explicit Dice(ge211::Random&);
+
+    //constructs a Dice class with dice with numbers die_1 and die_2. ONLY
+    // used in testing.
+    Dice(ge211::Random& rand, int die_1, int die_2);
 
     //produces new random ints between 1 and 6
     void roll();
-
-    //inverts the dice to -1 to -6 (useful when player is Dark)
-    void invert();
 
     //returns the 1st die number
     int num_1() const;
