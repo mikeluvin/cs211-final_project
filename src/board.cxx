@@ -117,6 +117,7 @@ void Board::remove_from_jail(int pos, Player thisplayer)
     add_piece(pos, thisplayer);
 }
 
+/*
 //sends a single piece at the given position to its endzone
 void Board::send_to_endzone(int pos)
 {
@@ -130,6 +131,7 @@ void Board::send_to_endzone(int pos)
         throw ge211::Client_logic_error("Can't send this piece to endzone");
     }
 }
+*/
 
 //returns number of jailed pieces for given player
 int Board::num_jailed(Player thisplayer) const

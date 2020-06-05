@@ -1,6 +1,7 @@
 #include "model.hxx"
 #include <catch.hxx>
 #include <ge211.hxx>
+#include <algorithm>
 
 //
 // TODO: Write preliminary model tests.
@@ -47,9 +48,11 @@ struct Test_access
     }
 
 };
+
+//requirement 1
 TEST_CASE("Board initialization")
 {
-    Board board = Board(true);
+    Board board = Board(1);
     //makes sure the board is properly initialized
     CHECK( board.num_pieces(6) == 5 );
     CHECK( board.num_pieces(8) == 3 );
@@ -60,6 +63,21 @@ TEST_CASE("Board initialization")
     CHECK( board.num_pieces(12) == 5 );
     CHECK( board.num_pieces(17) == 3 );
     CHECK( board.num_pieces(19) == 5 );
+
+    int num_dark = 0;
+    int num_light = 0;
+    for (int i = 0; i <= 25; ++i) {
+        if (board.player(i) == Player::dark) {
+            num_dark += board.num_pieces(i);
+        } else if (board.player(i) == Player::light) {
+            num_light += board.num_pieces(i);
+        }
+    }
+    num_dark += board.num_jailed(Player::dark);
+    num_light += board.num_jailed(Player::light);
+
+    CHECK( num_dark == 15 );
+    CHECK( num_light == 15 );
 }
 
 //requirement 11

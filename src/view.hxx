@@ -124,5 +124,4 @@ private:
     ge211::Text_sprite skipped_sprite_ = ge211::Text_sprite("Other player turn "
                                                             "skipped",
                                                              sans20);
-
 };
