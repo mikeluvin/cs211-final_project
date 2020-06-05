@@ -17,7 +17,10 @@ Model::Model(ge211::Random& rand, int board_state)
         : dice_ (rand)
         , board_ (board_state)
 {
-    if (dice_.num_1() >= dice_.num_2()) {
+    if (board_state == 2){
+        //need this for the one initialization case
+        turn_ = Player::dark;
+    } else if (dice_.num_1() >= dice_.num_2()) {
         turn_ = Player::dark;
     } else if (dice_.num_1() < dice_.num_2()) {
         turn_ = Player::light;
