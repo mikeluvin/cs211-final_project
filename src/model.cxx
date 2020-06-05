@@ -48,6 +48,8 @@ bool Model::all_in_final_() const
     return final_count == 15;
 }
 
+
+
 //checks if the dice are greater than the Player's pieces are away from
 // the endzone
 //(helper for evaluate_position, to be used after all_in_final_ is checked)
@@ -303,50 +305,6 @@ bool Model::evaluate_position_(int pos_from, int pos_to) const
                 //neither active
                 return false;
             }
-            /*
-            //all until normal gameplay irrelevant
-                if (turn_ == Player::dark && pos_to == 0 && pos_from ==
-                board_.pos_final(turn_).back()) {
-                    return true;
-                } else if (turn_ == Player::light && pos_to == 25 && pos_from
-                == board_.pos_final(turn_).back()) {
-                    return true;
-                } else {
-                    return false;
-                }
-            //}
-            else {
-                // can only play pieces equal to or higher than dice
-                // difference between positions must be die value
-                if (turn_ == Player::dark) {
-                    //todo: i dont think these conditions are correct. When i
-                    // got to this stage of the game, i could no longer move
-                    // the pieces and the game was stuck. We need to create a
-                    // model initializer that automatically puts both
-                    // players' pieces in their final stretch so we can
-                    // properly test this.
-                    if (dice_.num_1_active() && pos_from >= dice_.num_1() &&
-                    pos_to - pos_from == -dice_.num_1()) {
-                        return true;
-                    } else if (dice_.num_2_active() && pos_from >= dice_.num_2()
-                    && pos_to - pos_from == -dice_.num_2()) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                } else if (turn_ == Player::light) {
-                    if (dice_.num_1_active() && pos_from <= dice_.num_1() &&
-                    pos_to - pos_from == dice_.num_1()) {
-                        return true;
-                    } else if (dice_.num_2_active() && pos_from <= dice_.num_2()
-                    && pos_to - pos_from == dice_.num_2()) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            }
-             */
         } else {
             //normal gameplay when not all are in final, no one in jail, and
             // the spot has 1 or less of the other player's pieces
@@ -400,74 +358,6 @@ std::vector<int> Model::find_moves_helper_(int pos_start, int dir) const
             --j;
         }
     } else result = {};
-
-    //mike commented out this entire thing
-    //
-    //if (dice_.num_1_active() && dice_.num_2_active()) {
-    //    if (board_.player(pos_start + dice_.num_1() * dir) == turn_ ||
-    //    board_.num_pieces(pos_start + dice_.num_1() * dir) <= 1) {
-    //        result.push_back(pos_start + dice_.num_1() * dir);
-    //    }
-    //    if (board_.player(pos_start + dice_.num_2() * dir) == turn_ ||
-    //    board_.num_pieces(pos_start + dice_.num_2() * dir) <= 1) {
-    //        result.push_back(pos_start + dice_.num_2() * dir);
-    //    }
-    //    //anton commented out
-    //    /*
-    //    if (evaluate_position_(pos_start, pos_start + dice_.num_1() * dir) ||
-    //    evaluate_position_(pos_start, pos_start + dice_.num_1() * dir)) {
-    //        result.push_back(pos_start + dice_.num_1() * dir);
-    //    }
-    //    if (evaluate_position_(pos_start, pos_start + dice_.num_2() * dir) ||
-    //        evaluate_position_(pos_start, pos_start + dice_.num_2() * dir)) {
-    //        result.push_back(pos_start + dice_.num_2() * dir);
-    //    }*/
-    //    //
-    //} else if (dice_.num_1_active()) {
-    //    if (board_.player(pos_start + dice_.num_1() * dir) == turn_ ||
-    //    board_.num_pieces(pos_start + dice_.num_1() * dir) <= 1) {
-    //        result.push_back(pos_start + dice_.num_1() * dir);
-    //    }
-    //    //anton commented out
-    //    /*
-    //    if (evaluate_position_(pos_start, pos_start + dice_.num_1() * dir) ||
-    //        evaluate_position_(pos_start, pos_start + dice_.num_1() * dir)) {
-    //        result.push_back(pos_start + dice_.num_1() * dir);
-    //    }
-    //     */
-    //    //
-    //} else if (dice_.num_2_active()) {
-    //    if (board_.player(pos_start + dice_.num_2() * dir) == turn_ ||
-    //    board_.num_pieces(pos_start + dice_.num_2() * dir) <= 1) {
-    //        result.push_back(pos_start + dice_.num_2() * dir);
-    //    }
-    //    //anton commented out
-    //    /*
-    //    if (evaluate_position_(pos_start, pos_start + dice_.num_2() * dir) ||
-    //        evaluate_position_(pos_start, pos_start + dice_.num_2() * dir)) {
-    //        result.push_back(pos_start + dice_.num_2() * dir);
-    //    }*/
-    //    //
-    //} else {
-    //    result = {};
-    //}
-
-    //std::vector<int> actual_result;
-/*
-    for (int i = 0; i < result.size(); ++i) {
-        if (result[i] < 0) {
-            result[i] = 0;
-        } else if (result[i] > 25) {
-            result[i] = 25;
-        }
-        //if (evaluate_position_(pos_start, result[i])) {
-        //    actual_result.push_back(result[i]);
-        //}
-    }
-    */
-
-    //return actual_result;
-
 
     return result;
 }
@@ -525,7 +415,7 @@ void Model::advance_turn_()
 {
     if (is_game_over()) {
         set_game_over_();
-        throw ge211::Client_logic_error("Game over");
+        //throw ge211::Client_logic_error("Game over");
     } else if (!(dice_.num_1_active()) && !(dice_.num_2_active())) {
         turn_ = other_player(turn_);
         dice_.roll();
@@ -569,9 +459,6 @@ void Model::really_play_move_(int pos_from, int pos_to)
 
 void Model::inactivate_die(int pos_from, int pos_to)
 {
-    //todo: i forgot to consider the scenario when all_in_final and leq are
-    // true, so those need to be added
-
     if (pos_from == -1) {
         if (turn_ == Player::dark) {
             if (dice_.num_1_active() && dice_.num_1() == std::abs(pos_to -

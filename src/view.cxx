@@ -5,28 +5,12 @@
 #include "view.hxx"
 #include <algorithm>
 
-/*
-int board_start_x = 86;
-int board_top_y = 21;
-int board_bot_y = 528;
-int token_spacing_x = 50;
-int token_diameter = 44; //diameter of tokens
-int board_rhs_x = 401 + token_diameter/2;
-int jail_x = 400 - token_diameter/2;
-int jail_y = 255;
-int endzone_x = 736;
-int l_end_y = 227;
-int d_end_y = 351;
-int endzone_spacing = 14;
-int endzone_width = 50;
-double dice_scale = 0.4;
-ge211::Position dice_1_pos = {17, 250};
-ge211::Position dice_2_pos = {17, 300};
- */
-
 View::View(Model const& model)
         : model_(model)
-{ }
+        , builder_(sans72)
+{
+    builder_.color(builder_color_);
+}
 
 ge211::Dimensions View::initial_window_dimensions() const
 {
@@ -162,6 +146,17 @@ void View::draw(ge211::Sprite_set& set, int from, int to)
             }
         }
     }
+}
+
+void View::show_winner(ge211::Sprite_set& set)
+{
+    if (model_.winner() == Player::dark) {
+        builder_.add_message("Dark Wins!");
+    } else if (model_.winner() == Player::light) {
+        builder_.add_message("Light Wins!");
+    }
+    win_sprite_.reconfigure(builder_);
+    set.add_sprite(win_sprite_, {200, 200}, 1);
 }
 
 ge211::Position View::board_to_screen(int b_pos) const

@@ -17,6 +17,8 @@ public:
     // position we want to move it to
     void draw(ge211::Sprite_set&, int from, int to);
 
+    void show_winner(ge211::Sprite_set&);
+
     ge211::Dimensions initial_window_dimensions() const;
 
     std::string initial_window_title() const;
@@ -28,8 +30,6 @@ public:
 
     //takes a given screen position and maps it to its location on the board
     int screen_to_board(ge211::Position) const;
-
-    void show_possible_moves(int pos_from);
 
 private:
     int board_start_x_ = 86;
@@ -102,4 +102,12 @@ private:
 
     //helper to place the dice
     void render_dice(ge211::Sprite_set&, int);
+
+    ge211::Font sans72 {"sans.ttf", 72};
+    ge211::Font sans30 {"sans.ttf", 30};
+
+    ge211::Text_sprite win_sprite_;
+
+    ge211::Text_sprite::Builder builder_;
+    ge211::Color builder_color_ = {255, 153, 51};
 };

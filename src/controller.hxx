@@ -27,5 +27,4 @@ private:
     // which that piece is trying to be moved
     int from_pos_ = -2;
     int to_pos_ = -2;
-
 };

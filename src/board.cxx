@@ -21,6 +21,7 @@ Board::Board(bool init)
     } else {
         // for testing logic at end of game
 
+        /*
         positions_[1] = {5, Player::dark};
         positions_[2] = {3, Player::dark};
         positions_[3] = {5, Player::dark};
@@ -30,6 +31,13 @@ Board::Board(bool init)
         positions_[23] = {3, Player::light};
         positions_[22] = {5, Player::light};
         positions_[21] = {2, Player::light};
+         */
+
+        positions_[0] = {14, Player::dark};
+        positions_[1] = {1, Player::dark};
+
+        positions_[24] = {5, Player::light};
+        positions_[23] = {10, Player::light};
     }
 }
 

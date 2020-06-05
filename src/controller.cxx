@@ -7,7 +7,11 @@ Controller::Controller()
 
 void Controller::draw(ge211::Sprite_set& sprites)
 {
-    view_.draw(sprites, from_pos_, to_pos_);
+    if (model_.is_game_over() && model_.turn() == Player::neither) {
+        view_.show_winner(sprites);
+    } else {
+        view_.draw(sprites, from_pos_, to_pos_);
+    }
 }
 
 ge211::Dimensions Controller::initial_window_dimensions() const

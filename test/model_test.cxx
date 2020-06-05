@@ -1,5 +1,6 @@
 #include "model.hxx"
 #include <catch.hxx>
+#include <ge211.hxx>
 
 //
 // TODO: Write preliminary model tests.
@@ -36,8 +37,8 @@ struct Test_access
         return model_.all_in_final_();
     }
 
-    void play_move(int pos){
-        model_.play_move(pos);
+    void play_move(int pos_from, int pos_to) {
+        model_.play_move(pos_from, pos_to);
     }
 
 };
@@ -54,7 +55,7 @@ TEST_CASE("Board initialization")
 //requirement 11
 TEST_CASE("Dice roll")
 {
-    Dice mydice = Dice();
+    Dice mydice = Dice(ge211::Abstract_game::get_random());
     mydice.roll();
     //makes sure dice produce ints between 1 and 6
     CHECK( mydice.num_1() >= 1 && mydice.num_1() <= 6 );
@@ -119,9 +120,4 @@ TEST_CASE("advance a turn")
     t.turn() = Player::dark;
     t.play_move(13);
     CHECK( t.turn() == Player::light);
-}
-
-TEST_CASE("hopefully github works now")
-{
-    CHECK(true);
 }
