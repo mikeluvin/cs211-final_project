@@ -14,7 +14,7 @@ public:
 //Constructs the default board, with all positions having 0 pieces
 // if init is false, and with the proper initial setup if init is
 // true
-    Board(bool init);
+    Board(int board_state);
 
 //returns the number of pieces at the given position on the board.
     int num_pieces(int pos) const;

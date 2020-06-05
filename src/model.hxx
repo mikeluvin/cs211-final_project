@@ -14,9 +14,15 @@ class Model
 {
 public:
 
-//constructs the default model with the pieces properly intialized at the
-// starting locations
+//constructs the model with the default initialization
     explicit Model(ge211::Random&);
+
+//another constructor that explicitly takes an initial state of the board
+    Model(ge211::Random&, int board_state);
+
+//an additional constructor that takes two dice numbers and the Player whose
+// turn you want it to be. Will only be used in testing.
+    Model(ge211::Random& rand, int, int, Player);
 
 //returns whether the game is finished. This is true when one player has all
 //their pieces in their endzone (and turn_ == Player::neither).
@@ -38,6 +44,14 @@ public:
     Player winner() const
     { return winner_; }
 
+    //returns whether someone had no more moves after playing one die
+    bool no_more_moves() const
+    { return no_more_moves_; }
+
+    //returns whether someone had no more moves after playing one die
+    bool skipped_turn() const
+    { return skipped_turn_; }
+
     //finds the possible moves for a piece at the given position for the
     // current player. Returns a vector of the possible positions, or empty
     // if there's no moves
@@ -53,8 +67,11 @@ public:
 private:
     Player turn_;
     Player winner_ = Player::neither;
-    Board board_ = Board(true);
+    Board board_;
     Dice dice_;
+
+    bool no_more_moves_ = false;
+    bool skipped_turn_ = false;
 
 //
 ///HELPER FUNCTIONS

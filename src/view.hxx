@@ -32,6 +32,7 @@ private:
     int board_start_x_ = 86;
     int board_top_y_ = 21;
     int board_bot_y_ = 528;
+    int token_rad_ = 22;
     int token_spacing_x_ = 50;
     int token_diameter_ = 44; //diameter of tokens
     int board_rhs_x_ = 401 + token_diameter_/2;
@@ -65,10 +66,10 @@ private:
             board_sprite_    {"board.jpg"};
 
     ge211::Circle_sprite
-            dark_sprite_     {22, {120, 80, 25}};
+            dark_sprite_     {token_rad_, {120, 80, 25}};
 
     ge211::Circle_sprite
-            light_sprite_    {22, {210, 210, 210}};
+            light_sprite_    {token_rad_, {210, 210, 210}};
 
     ge211::Rectangle_sprite
             d_endzone_sprite_ {{50,13}, {120, 80, 25}};
@@ -78,8 +79,8 @@ private:
 
     //to show possible moves
     ge211::Rectangle_sprite
-            highlight_sprite_ {{highlight_width_, highlight_height_}, {100,
-                                                                       255,100}};
+            highlight_sprite_ {{highlight_width_, highlight_height_},
+                               {100,255,100}};
 
     ge211::Image_sprite
             dice_1_sprite_    {"side1.png"};
@@ -102,10 +103,26 @@ private:
     //helper to place the dice
     void render_dice(ge211::Sprite_set&, int);
 
+    ge211::Rectangle_sprite
+            msg_box_sprite_ {{252, 40},
+                               {0,0,0}};
+
+
     ge211::Font sans72 {"sans.ttf", 72};
 
     ge211::Text_sprite win_sprite_;
 
     ge211::Text_sprite::Builder builder_;
     ge211::Color builder_color_ = {204, 204, 255};
+
+
+    ge211::Font sans20 {"sans.ttf", 20};
+    ge211::Text_sprite turn_sprite_ = ge211::Text_sprite("Turn:", sans20);
+    ge211::Text_sprite no_moves_sprite_ = ge211::Text_sprite("No more moves, "
+                                                             "next player",
+                                                             sans20);
+    ge211::Text_sprite skipped_sprite_ = ge211::Text_sprite("Other player turn "
+                                                            "skipped",
+                                                             sans20);
+
 };

@@ -1,8 +1,8 @@
 #include "controller.hxx"
 #include <iostream>
 
-Controller::Controller()
-        : model_(get_random())
+Controller::Controller(int board_state)
+        : model_(get_random(), board_state)
         , view_(model_)
 { }
 
