@@ -2,8 +2,10 @@
 // Created by mjluv on 6/1/2020.
 //
 #pragma once
+
 #include "model.hxx"
 #include <vector>
+
 
 class View
 {
@@ -53,10 +55,6 @@ private:
     ge211::Position dice_2_pos_ = {17, 300};
 
     Model const& model_;
-    //Model model_;
-
-    //int triangle_width_ = 42;
-    //int triangle_height_ = 242;
 
     //stores the location of the outermost (the clickable) pieces. dark jail
     // is index 26, light jail is index 27

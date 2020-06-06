@@ -15,7 +15,6 @@ public:
     explicit Controller(int board_state);
 
 protected:
-    void on_mouse_move(ge211::Position) override;
 
     void on_mouse_up(ge211::Mouse_button, ge211::Position) override;
 

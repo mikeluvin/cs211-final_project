@@ -5,6 +5,7 @@
 #include "view.hxx"
 #include <algorithm>
 
+
 View::View(Model const& model)
         : model_(model)
         , builder_(sans72)
@@ -12,15 +13,18 @@ View::View(Model const& model)
     builder_.color(builder_color_);
 }
 
+
 ge211::Dimensions View::initial_window_dimensions() const
 {
     return {800, 593};
 }
 
+
 std::string View::initial_window_title() const
 {
     return "Backgammon";
 }
+
 
 void View::draw(ge211::Sprite_set& set, int from, int to)
 {
@@ -143,9 +147,6 @@ void View::draw(ge211::Sprite_set& set, int from, int to)
         render_dice(set, 2);
     }
 
-    //todo: make it so that when we click on a piece, we see the available
-    // moves for that piece. I made Model::find_moves_ public so we can do this
-
     if (from != -2 && to == -2) {
         for (int move : model_.find_moves_(from)) {
             if (move >= 13 && move <= 24) {
@@ -168,6 +169,7 @@ void View::draw(ge211::Sprite_set& set, int from, int to)
         }
     }
 }
+
 
 void View::show_winner(ge211::Sprite_set& set)
 {
@@ -211,6 +213,7 @@ ge211::Position View::board_to_screen(int b_pos) const
     return {-2, -2};
 }
 
+
 int View::screen_to_board(ge211::Position s_pos) const
 {
     //if the mouse isn't clicking a valid position, return -2 (not a valid
@@ -243,7 +246,6 @@ int View::screen_to_board(ge211::Position s_pos) const
     }
 
     //jail case
-    //todo not sure how to do this yet
     ge211::Position d_jail = outermost_pieces_[26];
     ge211::Position l_jail = outermost_pieces_[27];
     if (s_pos.x >= l_jail.x && s_pos.y >= l_jail.y && s_pos.x <= l_jail.x +
@@ -257,6 +259,7 @@ int View::screen_to_board(ge211::Position s_pos) const
 
     return result;
 }
+
 
 void View::render_dice(ge211::Sprite_set& set, int dice_num)
 {

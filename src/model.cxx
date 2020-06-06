@@ -1,6 +1,7 @@
 #include "model.hxx"
 #include <iostream>
 
+
 Model::Model(ge211::Random & rand)
         : dice_ (rand)
         , board_ (1)
@@ -17,7 +18,7 @@ Model::Model(ge211::Random& rand, int board_state)
         : dice_ (rand)
         , board_ (board_state)
 {
-    if (board_state == 2){
+    if (board_state == 2) {
         //need this for the one initialization case
         turn_ = Player::dark;
     } else if (dice_.num_1() >= dice_.num_2()) {
@@ -27,17 +28,35 @@ Model::Model(ge211::Random& rand, int board_state)
     }
 }
 
+
 Model::Model(ge211::Random& rand, int die_1, int die_2, Player player)
         : dice_ (rand, die_1, die_2)
         , turn_ (player)
-        , board_ (true)
+        , board_ (1)
 { }
+
+Model::Model(ge211::Random& rand, int die_1, int die_2, Player player, int
+board_state)
+        : dice_ (rand, die_1, die_2)
+        , turn_ (player)
+        , board_ (board_state)
+{
+    if (board_state == 2) {
+        //need this for the one initialization case
+        turn_ = Player::dark;
+    } else if (dice_.num_1() >= dice_.num_2()) {
+        turn_ = Player::dark;
+    } else if (dice_.num_1() < dice_.num_2()) {
+        turn_ = Player::light;
+    }
+}
 
 
 bool Model::is_game_over() const
 {
     return board().num_pieces(0) == 15 || board().num_pieces(25) == 15;
 }
+
 
 // pos represents the piece that we're starting with
 std::vector<int> Model::find_moves_(int pos) const
@@ -62,28 +81,19 @@ std::vector<int> Model::find_moves_(int pos) const
     return {};
 }
 
+
 void Model::play_move(int pos_from, int pos_to)
 {
     if (winner_ == Player::neither && evaluate_position_(pos_from, pos_to)) {
         really_play_move_(pos_from, pos_to);
-
         //set the correct die to inactive
-        // this is being called
         inactivate_die(pos_from, pos_to);
-
-        // this is not being called
-        // here is the first thing that isn't being called
-        // something's happening with inactivate die
         advance_turn_();
     }
 }
 //
 // HELPER FUNCTIONS
 //
-
-//we need to implement a function to determine who goes first. Simple to
-// write, but idk where exactly it belongs, cause it's a special scenario at
-// the beginning of the game
 
 //checks whether all of the current Player's pieces are in the final section
 //(helper for evaluate_position_)
@@ -100,9 +110,10 @@ bool Model::all_in_final_() const
     return final_count == 15;
 }
 
+
 //checks if the dice are greater than the Player's pieces are away from
 // the endzone
-//(helper for evaluate_position, to be used after all_in_final_ is checked)
+//helper for evaluate_position, to be used after all_in_final_ is checked
 bool Model::leq_die_(int dice_num) const
 {
     std::vector<int> pos_vec = board_.pos_final(turn_);
@@ -135,13 +146,10 @@ bool Model::leq_die_(int dice_num) const
     return false;
 }
 
+
 //determines whether the current Player can move their piece from pos_from
 // to the given position pos_to. Returns true if they can, false otherwise
-//(helper for find_moves_)
-//
-//we're going to need some variable in the controller to store the position
-// of the first click (the selected piece) and the position of the second
-// click (where the selected piece is being moved to)
+//helper for find_moves_
 bool Model::evaluate_position_(int pos_from, int pos_to) const
 {
 
@@ -310,6 +318,7 @@ bool Model::evaluate_position_(int pos_from, int pos_to) const
     return false;
 }
 
+
 // dir is 1 (for light) or -1 (for dark)
 // pos_start is the piece's position before any move
 std::vector<int> Model::find_moves_helper_(int pos_start, int dir) const
@@ -341,7 +350,6 @@ std::vector<int> Model::find_moves_helper_(int pos_start, int dir) const
 }
 
 
-
 void Model::set_game_over_()
 {
     turn_ = Player::neither;
@@ -351,6 +359,7 @@ void Model::set_game_over_()
         winner_ = Player::light;
     }
 }
+
 
 bool Model::no_next_moves_()
 {
@@ -367,6 +376,7 @@ bool Model::no_next_moves_()
     return true;
 }
 
+
 void Model::advance_turn_()
 {
     //set the no more moves/skipped turn flags back to false
@@ -379,23 +389,17 @@ void Model::advance_turn_()
         turn_ = other_player(turn_);
         dice_.roll();
     } else if (no_next_moves_()) {
-        //todo message here too: 'player turn_ had no more moves!'
         no_more_moves_ = true;
         turn_ = other_player(turn_);
         dice_.roll();
     }
     if (no_next_moves_()) {
-        //advance_turn_();
-        //todo: we should show a message saying that someone's turn was
-        // skipped since they had no moves. otherwise, you can only tell that
-        // this happened due to the fact that the same player ends up being
-        // able to move again
-        // 'player turn_ had no available moves!'
         skipped_turn_ = true;
         turn_ = other_player(turn_);
         dice_.roll();
     }
 }
+
 
 // we assume move is valid
 void Model::really_play_move_(int pos_from, int pos_to)
@@ -421,6 +425,7 @@ void Model::really_play_move_(int pos_from, int pos_to)
         }
     }
 }
+
 
 void Model::inactivate_die(int pos_from, int pos_to)
 {
@@ -513,5 +518,3 @@ void Model::inactivate_die(int pos_from, int pos_to)
         dice_.set_inactive(1);
     }
 }
-
-

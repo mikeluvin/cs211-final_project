@@ -38,9 +38,6 @@ public:
 //removes piece of player from jail and adds to board at position pos
     void remove_from_jail(int pos, Player player);
 
-//sends a single piece at the given position to its endzone
-    //void send_to_endzone(int pos);
-
 //returns number of jailed pieces for given player
     int num_jailed(Player player) const;
 

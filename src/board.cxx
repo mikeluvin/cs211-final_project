@@ -1,9 +1,9 @@
 //
 // Created by Anton de Lesseps on 5/27/20.
 //
-
 #include "board.hxx"
 #include "player.hxx"
+
 
 Board::Board(int board_state)
         : jail_ {0, 0}
@@ -44,10 +44,12 @@ Board::Board(int board_state)
     }
 }
 
+
 int Board::num_pieces(int pos) const
 {
     return positions_[pos].num_pieces;
 }
+
 
 //returns the player at the given position on the board.
 Player Board::player(int pos) const
@@ -55,12 +57,14 @@ Player Board::player(int pos) const
     return positions_[pos].player;
 }
 
+
 //clears the given position, making num_pieces == 0 and Player ==
 // Player::neither.
 void Board::clear_pos(int pos)
 {
     positions_[pos] = {0, Player::neither};
 }
+
 
 //removes a piece from the given position on the board.
 void Board::remove_piece(int pos)
@@ -71,6 +75,7 @@ void Board::remove_piece(int pos)
         positions_[pos].num_pieces -= 1;
     }
 }
+
 
 //adds a piece to the given position for the given player.
 void Board::add_piece(int pos, Player thisplayer)
@@ -85,6 +90,7 @@ void Board::add_piece(int pos, Player thisplayer)
     }
 }
 
+
 //sends a single piece at the given position to jail
 void Board::send_to_jail(int pos)
 {
@@ -96,6 +102,7 @@ void Board::send_to_jail(int pos)
         jail_.num_light += 1;
     }
 }
+
 
 //removes piece of player from jail and adds to board at position pos
 void Board::remove_from_jail(int pos, Player thisplayer)
@@ -117,21 +124,6 @@ void Board::remove_from_jail(int pos, Player thisplayer)
     add_piece(pos, thisplayer);
 }
 
-/*
-//sends a single piece at the given position to its endzone
-void Board::send_to_endzone(int pos)
-{
-    Player thisplayer = player(pos);
-    remove_piece(pos);
-    if (thisplayer == Player::light && pos >= 19 && pos <= 24) {
-        add_piece(25, thisplayer);
-    } else if (thisplayer == Player::dark && pos <= 6 && pos >= 1) {
-        add_piece(0, thisplayer);
-    } else {
-        throw ge211::Client_logic_error("Can't send this piece to endzone");
-    }
-}
-*/
 
 //returns number of jailed pieces for given player
 int Board::num_jailed(Player thisplayer) const
@@ -145,6 +137,7 @@ int Board::num_jailed(Player thisplayer) const
     }
 }
 
+
 //returns number of endzoned pieces for given player
 int Board::num_endzoned(Player thisplayer) const
 {
@@ -156,6 +149,7 @@ int Board::num_endzoned(Player thisplayer) const
         return 0;
     }
 }
+
 
 //returns a vector of the positions of the pieces in the player's final stretch
 // for the given player

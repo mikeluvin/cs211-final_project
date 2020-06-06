@@ -6,9 +6,6 @@
 #include <ge211.hxx>
 #include <vector>
 
-//
-// TODO: Sketch the structure of your model and declare its operations.
-//
 
 class Model
 {
@@ -23,6 +20,9 @@ public:
 //an additional constructor that takes two dice numbers and the Player whose
 // turn you want it to be. Will only be used in testing.
     Model(ge211::Random& rand, int, int, Player);
+
+    //another constructor for testing
+    Model(ge211::Random& rand, int, int, Player, int);
 
 //returns whether the game is finished. This is true when one player has all
 //their pieces in their endzone (and turn_ == Player::neither).
