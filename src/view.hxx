@@ -60,6 +60,9 @@ private:
     // is index 26, light jail is index 27
     std::vector<ge211::Position> outermost_pieces_{28, {-2, -2}};
 
+    //helper to place the dice
+    void render_dice(ge211::Sprite_set&, int);
+
     ge211::Image_sprite
             board_sprite_    {"board.jpg"};
 
@@ -98,13 +101,9 @@ private:
     ge211::Image_sprite
             dice_6_sprite_    {"side6.png"};
 
-    //helper to place the dice
-    void render_dice(ge211::Sprite_set&, int);
-
     ge211::Rectangle_sprite
             msg_box_sprite_ {{252, 40},
                                {0,0,0}};
-
 
     ge211::Font sans72 {"sans.ttf", 72};
 

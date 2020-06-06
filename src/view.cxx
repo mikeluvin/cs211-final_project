@@ -30,10 +30,6 @@ void View::draw(ge211::Sprite_set& set, int from, int to)
 {
     set.add_sprite(board_sprite_, {0,0});
 
-    //use model_.board().num_pieces(pos) to draw the correct number of pieces
-    // at those positions. We'll iterate over the entire board from 1 to 24.
-    // The jail and the endzones will be treated separately.
-
     //display who's turn it is
     set.add_sprite(turn_sprite_, {740, 250}, 1);
     if (model_.turn() == Player::dark) {
@@ -45,15 +41,17 @@ void View::draw(ge211::Sprite_set& set, int from, int to)
     //see if someone's turn got skipped/if there's no more moves for the
     // player, and display a message
     if (model_.no_more_moves()){
-        //draw the sprite
         set.add_sprite(msg_box_sprite_, {109, 280}, 1);
         set.add_sprite(no_moves_sprite_, {109, 280}, 2);
     }
     if (model_.skipped_turn()) {
-        //draw
         set.add_sprite(msg_box_sprite_, {440, 280}, 1);
         set.add_sprite(skipped_sprite_, {452, 280}, 2);
     }
+
+    //use model_.board().num_pieces(pos) to draw the correct number of pieces
+    // at those positions. We'll iterate over the entire board from 1 to 24.
+    // The jail and the endzones will be treated separately.
 
     //the top and the bottom need to be treated separately.
     //bottom row
@@ -63,9 +61,6 @@ void View::draw(ge211::Sprite_set& set, int from, int to)
         int num_pieces = model_.board().num_pieces(i);
         ge211::Position screen_pos = board_to_screen(i);
 
-        //if (model_.board().player(i) == Player::neither) {
-            //continue;
-        // } else
         if (model_.board().player(i) == Player::dark) {
             for (int j = 0; j < num_pieces; ++j) {
                 screen_pos.y = board_bot_y_ - j * token_diameter_;
@@ -88,9 +83,6 @@ void View::draw(ge211::Sprite_set& set, int from, int to)
         int num_pieces = model_.board().num_pieces(i);
         ge211::Position screen_pos = board_to_screen(i);
 
-        //if (model_.board().player(i) == Player::neither) {
-          // continue;
-        //}
         if (model_.board().player(i) == Player::dark) {
             for (int j = 0; j < num_pieces; ++j) {
                 screen_pos.y = board_top_y_ + j * token_diameter_;
@@ -147,6 +139,7 @@ void View::draw(ge211::Sprite_set& set, int from, int to)
         render_dice(set, 2);
     }
 
+    //display the possible moves for the clicked piece
     if (from != -2 && to == -2) {
         for (int move : model_.find_moves_(from)) {
             if (move >= 13 && move <= 24) {
@@ -187,10 +180,6 @@ void View::show_winner(ge211::Sprite_set& set)
 
 ge211::Position View::board_to_screen(int b_pos) const
 {
-    //position 1, bottom right: {board_rhs_x+token_spacing_x * 5, 524}
-    //position 2: {board_rhs_x+token_spacing_x * 4, 524}
-    //lower right quadrant
-
     if (b_pos >= 1 && b_pos <= 6) {
         return {board_rhs_x_ + token_spacing_x_ * (6 - b_pos), board_bot_y_};
     } else if (b_pos >= 7 && b_pos <= 12) {
@@ -219,10 +208,8 @@ int View::screen_to_board(ge211::Position s_pos) const
     //if the mouse isn't clicking a valid position, return -2 (not a valid
     // position)
     //empty positions have {-2, -2} stored in them
-    //currently both endzones are left empty (will be fixed)
     int result = -2;
 
-    //need to have access to screen position of the outermost piece
     for (int i = 1; i <= 24; ++i) {
         ge211::Position piece_pos = outermost_pieces_[i];
         //checks if screen position is within the bounds of the token sprite
@@ -275,7 +262,7 @@ void View::render_dice(ge211::Sprite_set& set, int dice_num)
     } else
         return;
 
-    //need to scale them down cause they're too large (112x112)
+    //need to scale them down since they're too large (112x112)
     ge211::Transform dice_transform = ge211::Transform{}.set_scale(dice_scale_);
     if (actual_dice_num == 1)
         set.add_sprite(dice_1_sprite_, dice_pos, 1, dice_transform);

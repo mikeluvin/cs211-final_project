@@ -1,6 +1,3 @@
-//
-// Created by Anton de Lesseps on 5/27/20.
-//
 #include "board.hxx"
 #include "player.hxx"
 
@@ -51,22 +48,17 @@ int Board::num_pieces(int pos) const
 }
 
 
-//returns the player at the given position on the board.
 Player Board::player(int pos) const
 {
     return positions_[pos].player;
 }
 
 
-//clears the given position, making num_pieces == 0 and Player ==
-// Player::neither.
 void Board::clear_pos(int pos)
 {
     positions_[pos] = {0, Player::neither};
 }
 
-
-//removes a piece from the given position on the board.
 void Board::remove_piece(int pos)
 {
     if (num_pieces(pos) <= 1) {
@@ -77,7 +69,6 @@ void Board::remove_piece(int pos)
 }
 
 
-//adds a piece to the given position for the given player.
 void Board::add_piece(int pos, Player thisplayer)
 {
     if (player(pos) == thisplayer) {
@@ -91,7 +82,6 @@ void Board::add_piece(int pos, Player thisplayer)
 }
 
 
-//sends a single piece at the given position to jail
 void Board::send_to_jail(int pos)
 {
     Player thisplayer = player(pos);
@@ -104,7 +94,6 @@ void Board::send_to_jail(int pos)
 }
 
 
-//removes piece of player from jail and adds to board at position pos
 void Board::remove_from_jail(int pos, Player thisplayer)
 {
     if (thisplayer == Player::dark) {
@@ -125,7 +114,6 @@ void Board::remove_from_jail(int pos, Player thisplayer)
 }
 
 
-//returns number of jailed pieces for given player
 int Board::num_jailed(Player thisplayer) const
 {
     if (thisplayer == Player::dark) {
@@ -138,7 +126,6 @@ int Board::num_jailed(Player thisplayer) const
 }
 
 
-//returns number of endzoned pieces for given player
 int Board::num_endzoned(Player thisplayer) const
 {
     if (thisplayer == Player::dark) {
@@ -150,9 +137,6 @@ int Board::num_endzoned(Player thisplayer) const
     }
 }
 
-
-//returns a vector of the positions of the pieces in the player's final stretch
-// for the given player
 std::vector<int> Board::pos_final(Player thisplayer) const
 {
     std::vector<int> result{};

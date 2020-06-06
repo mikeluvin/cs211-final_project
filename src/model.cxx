@@ -91,12 +91,11 @@ void Model::play_move(int pos_from, int pos_to)
         advance_turn_();
     }
 }
+
 //
-// HELPER FUNCTIONS
+/// HELPER FUNCTIONS
 //
 
-//checks whether all of the current Player's pieces are in the final section
-//(helper for evaluate_position_)
 bool Model::all_in_final_() const
 {
     std::vector<int> pos_vec = board_.pos_final(turn_);
@@ -110,10 +109,6 @@ bool Model::all_in_final_() const
     return final_count == 15;
 }
 
-
-//checks if the dice are greater than the Player's pieces are away from
-// the endzone
-//helper for evaluate_position, to be used after all_in_final_ is checked
 bool Model::leq_die_(int dice_num) const
 {
     std::vector<int> pos_vec = board_.pos_final(turn_);
@@ -147,9 +142,6 @@ bool Model::leq_die_(int dice_num) const
 }
 
 
-//determines whether the current Player can move their piece from pos_from
-// to the given position pos_to. Returns true if they can, false otherwise
-//helper for find_moves_
 bool Model::evaluate_position_(int pos_from, int pos_to) const
 {
 
@@ -222,8 +214,7 @@ bool Model::evaluate_position_(int pos_from, int pos_to) const
                     //both active, only dice 1 leq
                     //implies dice 1 > dice 2
                     //**when only one dice is leq and BOTH are active, the
-                    // die that is NOT leq MUST be played first!! So this
-                    // case should just be
+                    // die that is NOT leq MUST be played first!!
                     if (turn_ == Player::dark) {
                         return pos_to - pos_from == -dice_.num_2();
                     } else if (turn_ == Player::light) {
@@ -363,7 +354,6 @@ void Model::set_game_over_()
 
 bool Model::no_next_moves_()
 {
-    //std::vector<int> temp_moves;
     if (board_.num_jailed(turn_) > 0) {
         return find_moves_(-1).empty();
     }
@@ -384,7 +374,7 @@ void Model::advance_turn_()
     skipped_turn_ = false;
     if (is_game_over()) {
         set_game_over_();
-        //throw ge211::Client_logic_error("Game over");
+
     } else if (!(dice_.num_1_active()) && !(dice_.num_2_active())) {
         turn_ = other_player(turn_);
         dice_.roll();
@@ -401,7 +391,6 @@ void Model::advance_turn_()
 }
 
 
-// we assume move is valid
 void Model::really_play_move_(int pos_from, int pos_to)
 {
     //piece in jail case

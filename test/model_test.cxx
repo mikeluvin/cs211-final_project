@@ -2,13 +2,6 @@
 #include <catch.hxx>
 #include <algorithm>
 
-//
-// TODO: Write preliminary model tests.
-//
-// These tests should demonstrate at least six of the functional
-// requirements.
-//
-
 struct Random_test_access
 {
     ge211::Random random;

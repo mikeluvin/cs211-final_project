@@ -8,7 +8,6 @@ using namespace std;
 
 int main(int argc, char* argv[])
 try {
-    // TODO
     int board_state;
     switch (argc) {
     case 1:
@@ -23,7 +22,6 @@ try {
     }
 
     Controller(board_state).run();
-
 }
 
 // This prints out error messages if, say, the command-line argument
